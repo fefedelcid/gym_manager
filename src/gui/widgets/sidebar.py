@@ -4,7 +4,7 @@ from src.gui.widgets import IconButton
 class SideBar(CTkFrame):
     def __init__(self, master, controller, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
-        self.configure(fg_color='#636F7C', corner_radius=0)
+        self.configure(fg_color='#4F7399', corner_radius=0)
         self.controller = controller
         
         size=48

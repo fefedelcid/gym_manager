@@ -10,7 +10,7 @@ def sync_google_sheets():
         sync_clients()  # Ahora llamamos directamente a la función
         print("✅ Sincronización completada.")
     except Exception as e:
-        print(f"❌ Error durante la sincronización: {e}")
+        print(f"❌ Error durante la sincronización: {e} {type(e)}")
 
 
 if __name__ == "__main__":

@@ -27,4 +27,4 @@ else:
     subprocess.run([venv_python, "-m", "pip", "install", "-r", "requirements.txt"], check=True)
 
     print("Ejecutando la aplicación en modo desarrollo...")
-    subprocess.run([venv_python, "src/main.py"], check=True)
+    subprocess.run([venv_python, "main.py"], check=True)
