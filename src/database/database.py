@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel, Session, create_engine, select
 from src.database.models import Cliente, Ficha, Movimiento
 from src.utils import parse_date
-from datetime import datetime, timezone
+from datetime import datetime
 
 DATABASE_URL = "sqlite:///src/database/database.db"
 engine = create_engine(DATABASE_URL, echo=True)
@@ -214,3 +214,6 @@ class Database:
         except Exception as e:
             print(f"Error al eliminar cliente {clientId}: {e}")
             return False
+        
+if __name__=="__main__":
+    init_db()
