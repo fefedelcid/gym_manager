@@ -1,0 +1,6 @@
+customtkinter==5.2.2
+GitPython==3.1.43
+gspread==6.1.2
+protobuf==5.28.0
+webdriver_manager==4.0.2
+selenium==4.24.0
