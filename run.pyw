@@ -2,32 +2,29 @@ import os
 import subprocess
 import sys
 
-# Ruta al directorio del entorno virtual
-venv_dir = "venv"
+# Verifica si se está ejecutando desde un ejecutable generado por PyInstaller
+is_frozen = getattr(sys, 'frozen', False)
 
-# Ruta al ejecutable de Python dentro del entorno virtual
-venv_python = os.path.join(venv_dir, "Scripts", "python.exe") if os.name == "nt" else os.path.join(venv_dir, "bin", "python")
+# Llamar a update.py antes de iniciar la app
+print("Verificando actualizaciones...")
+subprocess.run([sys.executable, "src/core/update.py"], check=True)
 
-# Verifica si el entorno virtual no existe
-if not os.path.exists(venv_dir):
-    # Intenta importar virtualenv, si falla, lo instala
-    try:
-        import virtualenv # type: ignore
-    except ImportError:
-        print("virtualenv no está instalado. Instalando...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "virtualenv"])
-        # if os.name == "nt":
-        # else:
-        #     subprocess.check_call([sys.executable, "-m", "pip3", "install", "virtualenv"])
-    
-    # Crea el entorno virtual
-    print("Creando entorno virtual...")
-    subprocess.check_call([sys.executable, "-m", "virtualenv", venv_dir])
+if is_frozen:
+    # Si es un ejecutable (.exe), ejecuta directamente la app
+    exe_path = os.path.join(os.path.dirname(sys.executable), "main.exe")
+    print("Iniciando la aplicación desde el ejecutable...")
+    subprocess.run([exe_path])
+else:
+    # Modo desarrollo: Ejecutar en entorno virtual si existe
+    venv_dir = "venv"
+    venv_python = os.path.join(venv_dir, "Scripts", "python.exe") if os.name == "nt" else os.path.join(venv_dir, "bin", "python")
 
-# Instala las dependencias en el entorno virtual
-print("Instalando dependencias...")
-subprocess.check_call([venv_python, "-m", "pip", "install", "-r", "requirements.txt"])
+    if not os.path.exists(venv_dir):
+        print("Creando entorno virtual...")
+        subprocess.run([sys.executable, "-m", "venv", venv_dir], check=True)
 
-# Ejecuta el archivo main.py dentro del entorno virtual
-print("Ejecutando la aplicación...")
-os.execv(venv_python.replace("python", "pythonw"), ["python", "main.py"])
+    print("Instalando dependencias...")
+    subprocess.run([venv_python, "-m", "pip", "install", "-r", "requirements.txt"], check=True)
+
+    print("Ejecutando la aplicación en modo desarrollo...")
+    subprocess.run([venv_python, "src/main.py"], check=True)

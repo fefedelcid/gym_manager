@@ -19,12 +19,12 @@ class SideBar(CTkFrame):
             IconButton(self, f'assets/icons/icons8-exit-{size}.png', 'salir', callback=self.master.quit) # Salir
         ]
 
-        self.icons[0].pack(side="top", padx=1, pady=16) # Inicio
+        # self.icons[0].pack(side="top", padx=1, pady=16) # Inicio
         self.icons[1].pack(side="top", padx=1, pady=16) # Alumnos
         self.icons[3].pack(side="top", padx=1, pady=16) # Caja
         self.icons[2].pack(side="top", padx=1, pady=16) # Detalles
-        self.icons[4].pack(side="top", padx=1, pady=16) # Whatsapp
+        # self.icons[4].pack(side="top", padx=1, pady=16) # Whatsapp
         self.icons[6].pack(side="bottom", padx=1, pady=16) # Salir
-        self.icons[5].pack(side="bottom", padx=1, pady=16) # Configuración
+        # self.icons[5].pack(side="bottom", padx=1, pady=16) # Configuración
 
 
