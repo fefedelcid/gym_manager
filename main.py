@@ -2,7 +2,6 @@ from src.gui import MainWindow, LoginWindow
 from src.services import get_google_credentials
 from src.database import init_db
 from src.core import sync_clients
-import threading
 
 def sync_google_sheets():
     """Ejecuta la sincronización con Google Sheets en un hilo separado."""
