@@ -146,3 +146,13 @@ def sync_clients():
                 print(f"[INFO] Cliente añadido: {document}")
     except Exception as e:
         print(f"Error al corroborar datos: {e}")
+
+
+def sync_google_sheets():
+    """Ejecuta la sincronización con Google Sheets."""
+    try:
+        print("🔄 Iniciando sincronización con Google Sheets...")
+        sync_clients()
+        print("✅ Sincronización completada.")
+    except Exception as e:
+        print(f"❌ Error durante la sincronización: {e} {type(e)}")
