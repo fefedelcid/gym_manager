@@ -27,14 +27,12 @@ def check_for_updates():
         # Obtener última versión de GitHub
         response = requests.get(UPDATE_URL)
         response.raise_for_status() # Si hay un error HTTP, lanza una excepción
-        data = response.json()
-        
-        latest_version = data["version"]
+        latest = response.json()["version"]
 
         # Comparar versiones
-        if version.parse(latest_version) > version.parse(current_version):
-            print(f"🚀 Nueva versión disponible: {latest_version}")
-            update_app()
+        if version.parse(latest) > version.parse(current_version):
+            print(f"🚀 Nueva versión disponible: {latest}")
+            update_app(current_version, latest)
         else:
             print("✅ La aplicación está actualizada.")
 
@@ -42,16 +40,16 @@ def check_for_updates():
         print(f"❌ Error al buscar actualizaciones: {e}")
 
 
-def update_app():
+def update_app(current, latest):
     if not os.path.exists(os.path.join(REPO_PATH, ".git")):
         print("❌ No es un repositorio git. No se pueden aplicar actualizaciones.")
         return
 
     # Intento hacer pull para actualizar solo los archivos modificados
     try:
-        print("🔄 Buscando actualizaciones...")
-        subprocess.run(["git", "pull", "origin", "main"], cwd=REPO_PATH, check=True)
-        print("✅ Aplicadas actualizaciones con éxito.")
+        print(f"🔄 Actualizando v{current} a v{latest}...")
+        subprocess.run(["git", "reset", "--hard", "origin/main"], cwd=REPO_PATH, check=True)
+        print("✅ Sistema actualizado con éxito.")
         
         # Reiniciar la aplicación
         print("🔄 Reiniciando la aplicación...")

@@ -3,6 +3,8 @@ import os
 # Directorio base del proyecto (src)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO_PATH = os.path.join(BASE_DIR, "../")
+VENV_PATH = os.path.join(".venv", "Scripts", "python.exe") if os.name == "nt" else os.path.join(".venv", "bin", "python")
+
 
 # Rutas importantes
 CONFIG_DIR = os.path.join(BASE_DIR, "config")

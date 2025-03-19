@@ -23,8 +23,10 @@ def get_center(widget, width: float = 0, height: float = 0, w_hint: float = None
     
     return f"{width}x{height}+{x}+{y-25}"
 
-
 UTC_MINUS_3 = timezone(timedelta(hours=-3))
+
+def get_timestamp() -> float:
+    return _ensure_timezone(datetime.now()).timestamp()
 
 def parse_date(date_input) -> datetime:
     """Convierte una fecha en distintos formatos a un objeto datetime sin zona horaria."""
