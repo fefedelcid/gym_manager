@@ -34,7 +34,7 @@ def check_for_updates():
             print(f"🚀 Nueva versión disponible: {latest}")
             update_app(current_version, latest)
         else:
-            print("✅ La aplicación está actualizada.")
+            print(f"✅ La aplicación está actualizada. {current_version} / {latest}")
 
     except Exception as e:
         print(f"❌ Error al buscar actualizaciones: {e}")
