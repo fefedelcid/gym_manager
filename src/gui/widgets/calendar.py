@@ -32,7 +32,7 @@ class EntryDate(CTkFrame):
         self.year_entry.insert(0, f"{datetime.now().year}")
 
     def _only_digits(self, event):
-        if not event.char.isdigit(): # and event.keysym not in ("BackSpace", "Tab", "Left", "Right"):
+        if not event.char.isdigit() and event.keysym not in ("BackSpace", "Tab", "Left", "Right"):
             return "break"
     
     def _move_focus(self, event, current, next_entry, limit):
