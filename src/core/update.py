@@ -48,6 +48,7 @@ def update_app(current, latest):
     # Intento hacer pull para actualizar solo los archivos modificados
     try:
         print(f"🔄 Actualizando v{current} a v{latest}...")
+        subprocess.run(["git", "fetch", "--all"], cwd=REPO_PATH, check=True)
         subprocess.run(["git", "reset", "--hard", "origin/main"], cwd=REPO_PATH, check=True)
         print("✅ Sistema actualizado con éxito.")
         
