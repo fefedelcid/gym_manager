@@ -53,7 +53,7 @@ def update_app(current, latest):
         
         # Reiniciar la aplicación
         print("🔄 Reiniciando la aplicación...")
-        os.execv(sys.executable, [sys.executable] + sys.argv)
+        os.execv(sys.executable, "python", sys.argv)
     except subprocess.CalledProcessError as e:
         print(f"❌ Error al actualizar: {e}")
 
