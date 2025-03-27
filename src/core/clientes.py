@@ -1,13 +1,10 @@
 from src.services import read_sheet, find_spreadsheet, get_google_sheets_service
 from src.database import Database, Cliente, Ficha
-from src.utils import parse_date
+from src.utils import parse_date, log_message
+from src.config import SPREADSHEET_NAME, REGISTRADOS, NUEVOS
+
 
 def sync_clients():
-    # Configuración
-    SPREADSHEET_NAME = "Formulario de Inscripción (Respuestas)"
-    REGISTRADOS = "Alumnos Registrados"
-    NUEVOS = "Respuestas de formulario 1"
-
     # Conectar con Google Sheets
     sheet_id = find_spreadsheet(SPREADSHEET_NAME)
     sheet = get_google_sheets_service().spreadsheets()
@@ -18,122 +15,52 @@ def sync_clients():
     # Instancia de la base de datos
     db = Database()
 
-    # Documentos ya registrados en la base de datos y en la hoja secundaria
-    # El índice 5 hace referencia al documento
-    registered_documents = {cliente[5].strip().replace('.', '') for cliente in clientes_old[1:]}
+    # Documentos ya registrados en la base de datos
+    # y en la hoja secundaria
+    registered_documents = {
+        cliente[5].strip().replace('.', '') \
+            for cliente in clientes_old[1:]
+    }
 
     clientes_procesados = []
+    filas_procesadas = []
+    errores = []
+
     try:
-        for cliente in clientes_new[1:]:
+        for idx, cliente in enumerate(clientes_new[:1], start=2):  # Saltar encabezado
             try:
                 createdAt, email, fullName, birthDate, gender, document, phone,\
                 address, goal, medicalHistory, medication, recentInjury,\
                 emergencyContact, medicalCertificate, tyc, confirmation = cliente
             except Exception as e:
-                print(f"❌ Error al registrar: {cliente}, error={e}")
+                error_msg = f"Error al desempaquetar datos en fila {idx}: {e}"
+                log_message(f"❌ {error_msg}")
+                errores.append((idx, error_msg))
                 continue
-            
-            # Convertir fechas
-            createdAt = parse_date(createdAt)
-            birthDate = parse_date(birthDate)
 
             # Normalizar documento
             document = document.strip().replace('.', '')
 
             # Evitar duplicados
             if document in registered_documents or db.get_client(document):
-                continue # Saltar si ya existe
+                log_message(f"⚠️ Duplicado detectado en fila {idx}: {document}")
+                continue
 
-            # Crear cliente
-            new_client = Cliente(
-                fullName=fullName,
-                document=document,
-                email=email,
-                phone=phone,
-                birthDate=birthDate,
-                gender=gender,
-                address=address,
-                goal=goal,
-                createdAt=createdAt,
-                needCheck=True # Nuevo alumno necesita verificación
-            )
-
-            ficha = Ficha(
-                clientId=None,
-                medicalHistory=medicalHistory,
-                medication=medication,
-                recentInjury=recentInjury,
-                emergencyContact=emergencyContact,
-                medicalCertificate=medicalCertificate
-            )
-
-            # Registrar en la base de datos
-            db.add_client(new_client, ficha)
-            clientes_procesados.append(cliente)
-    except Exception as e:
-        print(f"Error al procesar alumnos: {e}")
-
-    # Mover alumnos procesados a la hoja "Alumnos Registrados"
-    # y eliminarlos de "Respuestas de formulario 1"
-    if len(clientes_procesados)>0:
-        sheet.values().append(
-            spreadsheetId=sheet_id,
-            range=REGISTRADOS,
-            valueInputOption="RAW",
-            body={"values": clientes_procesados}
-        ).execute()
-
-        for cliente in clientes_procesados:
-            sheet.values().clear(
-                spreadsheetId=sheet_id,
-                range=NUEVOS
-            ).execute()
-
-    # Confirmar que los alumnos de "Alumnos Registrados" estén en la base de datos
-    try:
-        for idx, cliente in enumerate(clientes_old[1:]):
             try:
-                createdAt, email, fullName, birthDate, gender, document, phone,\
-                address, goal, medicalHistory, medication, recentInjury,\
-                emergencyContact, medicalCertificate = cliente
-            except ValueError:
-                createdAt = cliente[0]
-                email = cliente[1]
-                fullName = cliente[2]
-                birthDate = cliente[3]
-                gender = cliente[4]
-                document = cliente[5]
-                phone = cliente[6]
-                address = cliente[7]
-                goal = cliente[8]
-                medicalHistory = cliente[9]
-                medication = cliente[10]
-                recentInjury = cliente[11]
-                emergencyContact = cliente[12]
-                medicalCertificate = ""
-            except Exception as e:
-                raise e
-            
-            createdAt = parse_date(createdAt)
-            birthDate = parse_date(birthDate)
-            print(f"[{idx}] Cliente.birthDate: {birthDate} type:{type(birthDate)}, Cliente.createdAt: {createdAt} type:{type(createdAt)}")
-
-            # Normalizar documento
-            document = document.strip().replace('.', '')
-
-            if not db.get_client(document):
-                cliente = Cliente(
+                # Crear cliente y ficha
+                new_client = Cliente(
                     fullName=fullName,
                     document=document,
                     email=email,
                     phone=phone,
-                    birthDate=birthDate,
+                    birthDate=parse_date(birthDate),
                     gender=gender,
                     address=address,
                     goal=goal,
-                    createdAt=createdAt,
+                    createdAt=parse_date(createdAt),
                     needCheck=True
                 )
+
                 ficha = Ficha(
                     clientId=None,
                     medicalHistory=medicalHistory,
@@ -142,17 +69,84 @@ def sync_clients():
                     emergencyContact=emergencyContact,
                     medicalCertificate=medicalCertificate
                 )
-                db.add_client(cliente, ficha)
-                print(f"[INFO] Cliente añadido: {document}")
+            except Exception as e:
+                error_msg = f"Error al crear cliente y ficha {idx}: {e}"
+                log_message(f"❌ {error_msg}")
+                errores.append((idx, error_msg))
+                continue
+
+            # Registrar en la base de datos
+            try:
+                db.add_client(new_client, ficha)
+                clientes_procesados.append(cliente)
+                filas_procesadas.append(idx)
+                log_message(f"✅ Cliente agregado con éxito: {fullName} ({document})")
+                
+            except Exception as e:
+                error_msg = f"Error al insertar en DB, fila {idx}: {e}"
+                log_message(f"❌ {error_msg}")
+                errores.append((idx, error_msg))
+
     except Exception as e:
-        print(f"Error al corroborar datos: {e}")
+        log_message(f"Error general al procesar clientes: {e}")
+
+    # Mover alumnos procesados a la hoja "Alumnos Registrados"
+    if clientes_procesados:
+        try:
+            sheet.values().append(
+                spreadsheetId=sheet_id,
+                range=REGISTRADOS,
+                valueInputOption="RAW",
+                body={"values": clientes_procesados}
+            ).execute()
+            log_message(f"✅ {len(clientes_procesados)} clientes movidos a '{REGISTRADOS}'.")
+        except Exception as e:
+            log_message(f"❌ Error al mover datos a '{REGISTRADOS}': {e}")
+
+    # Eliminar solo las filas procesadas en "NUEVOS"
+    if filas_procesadas:
+        try:
+            # Invertir el orden para no desplazar índices al eliminar filas
+            for idx in sorted(filas_procesadas, reverse=True):
+                sheet.batchUpdate(
+                    spreadsheetId=sheet_id,
+                    body={
+                        "requests": [{
+                            "deleteDimension": {
+                                "range": {
+                                    "sheetId": NUEVOS,
+                                    "dimension": "ROWS",
+                                    "startIndex": idx - 1,  # Ajustar índice 0-based
+                                    "endIndex": idx
+                                }
+                            }
+                        }]
+                    }
+                ).execute()
+            log_message(f"🗑️ {len(filas_procesadas)} filas eliminadas de '{NUEVOS}'.")
+        except Exception as e:
+            log_message(f"❌ Error al eliminar filas de '{NUEVOS}': {e}")
+
+    # Registro final de errores
+    if errores:
+        log_message(f"⚠️ Errores encontrados: {len(errores)}")
+        for idx, error in errores:
+            log_message(f"   - Fila {idx}: {error}")
 
 
 def sync_google_sheets():
     """Ejecuta la sincronización con Google Sheets."""
     try:
         print("🔄 Iniciando sincronización con Google Sheets...")
+        log_message("🔄 Iniciando sincronización con Google Sheets...")
         sync_clients()
         print("✅ Sincronización completada.")
+        log_message("✅ Sincronización completada.")
     except Exception as e:
-        print(f"❌ Error durante la sincronización: {e} {type(e)}")
+        error_msg = f"❌ Error durante la sincronización: {e} {type(e)}"
+        print(error_msg)
+        log_message(error_msg)
+
+
+if __name__ == "__main__":
+    sync_google_sheets()
