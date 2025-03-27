@@ -34,7 +34,7 @@ def check_for_updates():
             print(f"🚀 Nueva versión disponible: {latest}")
             update_app(current_version, latest)
         else:
-            print("✅ La aplicación está actualizada.")
+            print(f"✅ La aplicación está actualizada. {current_version} / {latest}")
 
     except Exception as e:
         print(f"❌ Error al buscar actualizaciones: {e}")
@@ -48,12 +48,13 @@ def update_app(current, latest):
     # Intento hacer pull para actualizar solo los archivos modificados
     try:
         print(f"🔄 Actualizando v{current} a v{latest}...")
+        subprocess.run(["git", "fetch", "--all"], cwd=REPO_PATH, check=True)
         subprocess.run(["git", "reset", "--hard", "origin/main"], cwd=REPO_PATH, check=True)
         print("✅ Sistema actualizado con éxito.")
         
         # Reiniciar la aplicación
         print("🔄 Reiniciando la aplicación...")
-        os.execv(sys.executable, [sys.executable] + sys.argv)
+        os.execv(sys.executable, "python", sys.argv)
     except subprocess.CalledProcessError as e:
         print(f"❌ Error al actualizar: {e}")
 
