@@ -2,15 +2,6 @@ from datetime import datetime, timezone, timedelta, date
 from src.database import Cliente
 
 
-# Inicializar archivo de logs
-LOG_FILE = "logs.txt"
-
-def log_message(message):
-    """Escribe un mensaje en el archivo de logs con timestamp."""
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    with open(LOG_FILE, "a", encoding="utf-8") as log_file:
-        log_file.write(f"[{timestamp}] {message}\n")
-
 def get_center(widget, width: float = 0, height: float = 0, w_hint: float = None, h_hint: float = None) -> str:
     '''
     Este método recibe un widget, ancho y alto, y opcionalmente factores de escala w_hint y h_hint.
@@ -33,6 +24,15 @@ def get_center(widget, width: float = 0, height: float = 0, w_hint: float = None
     return f"{width}x{height}+{x}+{y-25}"
 
 UTC_MINUS_3 = timezone(timedelta(hours=-3))
+
+# Inicializar archivo de logs
+LOG_FILE = "logs.txt"
+
+def log_message(message):
+    """Escribe un mensaje en el archivo de logs con timestamp."""
+    timestamp = datetime.now(tz=UTC_MINUS_3).strftime("%Y-%m-%d %H:%M:%S")
+    with open(LOG_FILE, "a", encoding="utf-8") as log_file:
+        log_file.write(f"[{timestamp}] {message}\n")
 
 def get_timestamp() -> float:
     return _ensure_timezone(datetime.now()).timestamp()

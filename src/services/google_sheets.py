@@ -48,9 +48,10 @@ def read_sheet(spreadsheet_id, range_name, sheet):
 
 
 if __name__ == "__main__":
-    SPREADSHEET_NAME = "Formulario de Inscripción (Respuestas)"
+    from src.config import SPREADSHEET_NAME#, NUEVOS, REGISTRADOS
+
     id = find_spreadsheet(SPREADSHEET_NAME)
     service = get_google_sheets_service()
     sheet = service.spreadsheets()
-    # read_sheet(id, "Respuestas de formulario 1", sheet)
-    # read_sheet(id, "Alumnos Registrados", sheet)
+    # read_sheet(id, NUEVOS, sheet)
+    # read_sheet(id, REGISTRADOS, sheet)
