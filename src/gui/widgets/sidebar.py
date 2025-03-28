@@ -19,7 +19,7 @@ class SideBar(CTkFrame):
             IconButton(self, f'assets/icons/icons8-exit-{size}.png', 'salir', callback=self.master.quit) # Salir
         ]
 
-        # self.icons[0].pack(side="top", padx=1, pady=16) # Inicio
+        self.icons[0].pack(side="top", padx=1, pady=16) # Inicio
         self.icons[1].pack(side="top", padx=1, pady=16) # Alumnos
         self.icons[3].pack(side="top", padx=1, pady=16) # Caja
         self.icons[2].pack(side="top", padx=1, pady=16) # Detalles

@@ -35,7 +35,7 @@ class MainWindow(CTk):
         # Página de configuración
         # self.mainframe.add_frame("ConfigFrame", ConfigFrame)
         
-        self.mainframe.show_frame("StudentsFrame")
+        self.mainframe.show_frame("HomeFrame")
 
         # Menú lateral
         self.sidebar = SideBar(self, self.mainframe)

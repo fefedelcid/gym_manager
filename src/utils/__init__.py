@@ -1,1 +1,1 @@
-from .helpers import get_center, parse_date, get_tag, get_timestamp, log_message
+from .helpers import get_center, parse_date, get_tag, get_timestamp, print_log

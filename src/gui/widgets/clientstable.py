@@ -2,7 +2,7 @@ from tkinter.ttk import Treeview
 from tkinter import StringVar
 from customtkinter import CTkFrame, CTkEntry
 from src.database import Database
-from src.utils import parse_date, get_tag
+from src.utils import parse_date, get_tag, print_log
 from datetime import datetime
 
 class ClientsTable(CTkFrame):
@@ -105,7 +105,7 @@ class ClientsTable(CTkFrame):
                     tags = get_tag(client)
                     self.table.insert("", "end", values=values, tags=tags)
         except Exception as e:
-            print(f'[Exception] on: update_table, {e}')
+            print_log(f'[Exception] on: update_table, {e}')
     
 
     def sort_column(self, col, reverse):
@@ -125,7 +125,7 @@ class ClientsTable(CTkFrame):
             # Cambiar el evento de ordenación
             self.table.heading(col, command=lambda: self.sort_column(col, not reverse))
         except Exception as e:
-            print(f"[Exception] on: sort_column, {e}")
+            print_log(f"[Exception] on: sort_column, {e}")
 
 
     def item_selected(self, event=None):
@@ -139,4 +139,4 @@ class ClientsTable(CTkFrame):
             if self.callback:
                 self.callback(data=document)
         except Exception as e:
-            print(f'[Exception] on: item_selected, {e}')
+            print_log(f'[Exception] on: item_selected, {e}')

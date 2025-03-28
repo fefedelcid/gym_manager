@@ -28,18 +28,20 @@ UTC_MINUS_3 = timezone(timedelta(hours=-3))
 # Inicializar archivo de logs
 LOG_FILE = "logs.txt"
 
-def log_message(message):
+def print_log(message):
     """Escribe un mensaje en el archivo de logs con timestamp."""
     timestamp = datetime.now(tz=UTC_MINUS_3).strftime("%Y-%m-%d %H:%M:%S")
+    message = f"[{timestamp}] {message}\n"
+    print(message)
     with open(LOG_FILE, "a", encoding="utf-8") as log_file:
-        log_file.write(f"[{timestamp}] {message}\n")
+        log_file.write(message)
 
 def get_timestamp() -> float:
     return _ensure_timezone(datetime.now()).timestamp()
 
 def parse_date(date_input) -> datetime:
     """Convierte una fecha en distintos formatos a un objeto datetime sin zona horaria."""
-    # print(f"\n[INFO][parse_date] date_input:{date_input}, type:{type(date_input)}")
+    # print_log(f"\n[INFO][parse_date] date_input:{date_input}, type:{type(date_input)}")
     
     if isinstance(date_input, datetime):  # Objeto datetime
         return _ensure_timezone(date_input)

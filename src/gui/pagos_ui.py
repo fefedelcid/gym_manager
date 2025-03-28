@@ -1,5 +1,6 @@
 from customtkinter import CTkFrame, CTkLabel
 from src.gui.widgets import ClientsTable
+from src.utils import print_log
 
 class PaymentsFrame(CTkFrame):
     def __init__(self, master, name, *args, **kwargs):
@@ -15,4 +16,4 @@ class PaymentsFrame(CTkFrame):
 
     def callback(self, event=None, data=None):
         self.client_dni = data
-        print(data)
+        print_log(data)

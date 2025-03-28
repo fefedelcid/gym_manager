@@ -1,4 +1,5 @@
 from customtkinter import CTkFrame
+from src.utils import print_log
 
 class MainFrame(CTkFrame):
     """Esta clase ayuda a manejar múltiples vistas de forma sencilla."""
@@ -22,9 +23,9 @@ class MainFrame(CTkFrame):
         for frame in self.frames.values():
             frame.pack_forget()
         try:
-            print(f"MainFrame.show_frame, frame:{name}, data:{data}")
+            print_log(f"MainFrame.show_frame, frame:{name}, data:{data}")
             if name=="DetailsFrame" and data:
                 self.frames[name].populate(data)
             self.frames[name].pack(fill="both", expand=True)
         except KeyError:
-            print("Pestaña no encontrada.")
+            print_log("Pestaña no encontrada.")

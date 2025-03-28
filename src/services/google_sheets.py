@@ -1,5 +1,6 @@
 import os
 import sys
+from src.utils import print_log
 # Obtener la ruta del directorio raíz del proyecto
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Agregar el directorio raíz al sys.path si no está ya presente
@@ -41,7 +42,7 @@ def read_sheet(spreadsheet_id, range_name, sheet):
     values = result.get("values", [])
 
     if not values:
-        print("No se encontraron datos en la hoja.")
+        print_log("No se encontraron datos en la hoja.")
         return None
     else:
         return values
@@ -50,8 +51,8 @@ def read_sheet(spreadsheet_id, range_name, sheet):
 if __name__ == "__main__":
     from src.config import SPREADSHEET_NAME#, NUEVOS, REGISTRADOS
 
-    id = find_spreadsheet(SPREADSHEET_NAME)
+    spreadsheet_id = find_spreadsheet(SPREADSHEET_NAME)
     service = get_google_sheets_service()
     sheet = service.spreadsheets()
-    # read_sheet(id, NUEVOS, sheet)
-    # read_sheet(id, REGISTRADOS, sheet)
+    # read_sheet(spreadsheet_id, NUEVOS, sheet)
+    # read_sheet(spreadsheet_id, REGISTRADOS, sheet)

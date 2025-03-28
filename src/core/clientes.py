@@ -1,6 +1,6 @@
 from src.services import read_sheet, find_spreadsheet, get_google_sheets_service
 from src.database import Database, Cliente, Ficha
-from src.utils import parse_date, log_message
+from src.utils import parse_date, print_log
 from src.config import SPREADSHEET_NAME, REGISTRADOS, NUEVOS
 
 
@@ -34,7 +34,7 @@ def sync_clients():
                 emergencyContact, medicalCertificate, tyc, confirmation = cliente
             except Exception as e:
                 error_msg = f"Error al desempaquetar datos en fila {idx}: {e}"
-                log_message(f"❌ {error_msg}")
+                print_log(f"❌ {error_msg}")
                 errores.append((idx, error_msg))
                 continue
 
@@ -43,7 +43,7 @@ def sync_clients():
 
             # Evitar duplicados
             if document in registered_documents or db.get_client(document):
-                log_message(f"⚠️ Duplicado detectado en fila {idx}: {document}")
+                print_log(f"⚠️ Duplicado detectado en fila {idx}: {document}")
                 continue
 
             try:
@@ -71,7 +71,7 @@ def sync_clients():
                 )
             except Exception as e:
                 error_msg = f"Error al crear cliente y ficha {idx}: {e}"
-                log_message(f"❌ {error_msg}")
+                print_log(f"❌ {error_msg}")
                 errores.append((idx, error_msg))
                 continue
 
@@ -80,15 +80,15 @@ def sync_clients():
                 db.add_client(new_client, ficha)
                 clientes_procesados.append(cliente)
                 filas_procesadas.append(idx)
-                log_message(f"✅ Cliente agregado con éxito: {fullName} ({document})")
+                print_log(f"✅ Cliente agregado con éxito: {fullName} ({document})")
                 
             except Exception as e:
                 error_msg = f"Error al insertar en DB, fila {idx}: {e}"
-                log_message(f"❌ {error_msg}")
+                print_log(f"❌ {error_msg}")
                 errores.append((idx, error_msg))
 
     except Exception as e:
-        log_message(f"Error general al procesar clientes: {e}")
+        print_log(f"Error general al procesar clientes: {e}")
 
     # Mover alumnos procesados a la hoja "Alumnos Registrados"
     if clientes_procesados:
@@ -99,9 +99,9 @@ def sync_clients():
                 valueInputOption="RAW",
                 body={"values": clientes_procesados}
             ).execute()
-            log_message(f"✅ {len(clientes_procesados)} clientes movidos a '{REGISTRADOS}'.")
+            print_log(f"✅ {len(clientes_procesados)} clientes movidos a '{REGISTRADOS}'.")
         except Exception as e:
-            log_message(f"❌ Error al mover datos a '{REGISTRADOS}': {e}")
+            print_log(f"❌ Error al mover datos a '{REGISTRADOS}': {e}")
 
     # Eliminar solo las filas procesadas en "NUEVOS"
     if filas_procesadas:
@@ -123,29 +123,26 @@ def sync_clients():
                         }]
                     }
                 ).execute()
-            log_message(f"🗑️ {len(filas_procesadas)} filas eliminadas de '{NUEVOS}'.")
+            print_log(f"🗑️ {len(filas_procesadas)} filas eliminadas de '{NUEVOS}'.")
         except Exception as e:
-            log_message(f"❌ Error al eliminar filas de '{NUEVOS}': {e}")
+            print_log(f"❌ Error al eliminar filas de '{NUEVOS}': {e}")
 
     # Registro final de errores
     if errores:
-        log_message(f"⚠️ Errores encontrados: {len(errores)}")
+        print_log(f"⚠️ Errores encontrados: {len(errores)}")
         for idx, error in errores:
-            log_message(f"   - Fila {idx}: {error}")
+            print_log(f"   - Fila {idx}: {error}")
 
 
 def sync_google_sheets():
     """Ejecuta la sincronización con Google Sheets."""
     try:
-        print("🔄 Iniciando sincronización con Google Sheets...")
-        log_message("🔄 Iniciando sincronización con Google Sheets...")
+        print_log("🔄 Iniciando sincronización con Google Sheets...")
         sync_clients()
-        print("✅ Sincronización completada.")
-        log_message("✅ Sincronización completada.")
+        print_log("✅ Sincronización completada.")
     except Exception as e:
         error_msg = f"❌ Error durante la sincronización: {e} {type(e)}"
-        print(error_msg)
-        log_message(error_msg)
+        print_log(error_msg)
 
 
 if __name__ == "__main__":

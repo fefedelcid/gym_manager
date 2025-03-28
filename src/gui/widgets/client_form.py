@@ -2,7 +2,7 @@ from customtkinter import CTkScrollableFrame, CTkFrame, CTkEntry, CTkLabel, CTkB
 from src.database import Cliente, Ficha, Movimiento
 from src.gui.widgets import EntryDate, MoneyEntry, StatefulBtn
 from tkinter.ttk import Treeview
-from src.utils import parse_date
+from src.utils import parse_date, print_log
 from datetime import datetime
 
 class BaseForm:
@@ -173,7 +173,7 @@ class PagosForm(CTkFrame, BaseForm):
                 self.table.move(kid, "", index)
             self.table.heading(col, command=lambda: self.sort_column(col, not reverse))
         except Exception as e:
-            print(f"[Exception] on: PagosForm.sort_column, {e}")
+            print_log(f"[Exception] on: PagosForm.sort_column, {e}")
 
     def item_selected(self, event=None):
         try:
@@ -184,7 +184,7 @@ class PagosForm(CTkFrame, BaseForm):
             self.createdAt.insert(0, string=values[0])
             self.amount.insert(0, values[1])
         except Exception as e:
-            print(f"[Exception] on: PagosForm.item_selected, {e}")
+            print_log(f"[Exception] on: PagosForm.item_selected, {e}")
 
     def update_table(self, movimientos:list[Movimiento]):
         try:
@@ -193,4 +193,4 @@ class PagosForm(CTkFrame, BaseForm):
                 values = (pago.createdAt.strftime("%d/%m/%Y"), pago.amount)
                 self.table.insert("", "end", values=values)
         except Exception as e:
-            print(f"[Exception] on: PagosForm.update_table, {e}")
+            print_log(f"[Exception] on: PagosForm.update_table, {e}")

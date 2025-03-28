@@ -1,5 +1,6 @@
 from customtkinter import CTkFrame, CTkLabel
 from src.gui.widgets import ClientsTable
+from src.utils import print_log
 
 class ClientsFrame(CTkFrame):
     def __init__(self, master, name, *args, **kwargs):
@@ -17,5 +18,5 @@ class ClientsFrame(CTkFrame):
         """Este método se ejecuta al seleccionar un registro en
         ClientsTable.item_selected.
         :data: Mismo que Cliente.document"""
-        print(f"ClientsFrame.callback, data:{data}")
+        print_log(f"[INFO] ClientsFrame.callback, data:{data}")
         self.master.show_frame("DetailsFrame", data)
