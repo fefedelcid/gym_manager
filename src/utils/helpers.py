@@ -87,7 +87,7 @@ def _parse_string(date_str: str) -> datetime:
     if date_str.isdecimal():
         return parse_date(int(date_str))
 
-    date_formats = ["%d/%m/%Y", "%m/%d/%Y %H:%M:%S", "%m/%d/%Y", "%Y-%m-%d", "%Y-%m-%d %H:%M:%S"]
+    date_formats = ["%d/%m/%Y", "%d/%m/%Y %H:%M:%S", "%m/%d/%Y %H:%M:%S", "%m/%d/%Y", "%Y-%m-%d", "%Y-%m-%d %H:%M:%S"]
     
     for fmt in date_formats:
         try:
