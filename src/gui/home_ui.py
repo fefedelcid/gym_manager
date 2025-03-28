@@ -1,4 +1,5 @@
-from customtkinter import CTkFrame, CTkLabel
+from customtkinter import CTkFrame, CTkLabel, CTkButton
+from src.core import sync_google_sheets
 
 
 class HomeFrame(CTkFrame):
@@ -12,3 +13,6 @@ class HomeFrame(CTkFrame):
 
         self.subtitle = CTkLabel(self, font=('Roboto', 16), text="Sistema Administrativo")
         self.subtitle.pack()
+
+        self.sync_btn = CTkButton(self, font=('Roboto', 16), text="Sincronizar", command=sync_google_sheets)
+        self.sync_btn.pack(side="bottom", pady=50)
