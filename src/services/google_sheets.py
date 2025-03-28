@@ -26,7 +26,7 @@ def get_google_sheets_service():
 
 
 def find_spreadsheet(name):
-    """Busca una hoja de cálculo en el Google Drive del usuario autenticado"""
+    """Busca un documento de hoja de cálculo en el Google Drive del usuario autenticado"""
     service = get_google_drive_service()
     query = f"name='{name}' and mimeType='application/vnd.google-apps.spreadsheet'"
     results = service.files().list(q=query, fields="files(id, name)").execute()
