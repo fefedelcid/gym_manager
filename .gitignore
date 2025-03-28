@@ -7,5 +7,6 @@
 *.db
 *.spec
 *.pickle
-logs.txt
+*.txt
+*.log
 credentials.json

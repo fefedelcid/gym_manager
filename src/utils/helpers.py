@@ -1,6 +1,5 @@
 from datetime import datetime, timezone, timedelta, date
-from src.database import Cliente
-
+import os
 
 def get_center(widget, width: float = 0, height: float = 0, w_hint: float = None, h_hint: float = None) -> str:
     '''
@@ -25,10 +24,23 @@ def get_center(widget, width: float = 0, height: float = 0, w_hint: float = None
 
 UTC_MINUS_3 = timezone(timedelta(hours=-3))
 
-# Inicializar archivo de logs
-LOG_FILE = "logs.txt"
+def _ensure_timezone(dt: datetime) -> datetime:
+    """Asegura que el datetime tenga la zona horaria UTC-3 y lo convierte a UTC sin tzinfo."""
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=UTC_MINUS_3)
+    else:
+        dt = dt.astimezone(UTC_MINUS_3)
+    return dt.astimezone(timezone.utc).replace(tzinfo=None)
 
-def print_log(message):
+def get_timestamp() -> float:
+    return _ensure_timezone(datetime.now()).timestamp()
+SESSION_TIMESTAMP = datetime.fromtimestamp(get_timestamp())
+
+# Inicializar archivo de logs
+string = datetime.strftime(SESSION_TIMESTAMP, "%Y.%m.%d")
+LOG_FILE = f"{string}.log"
+
+def print_log(message:str):
     """Escribe un mensaje en el archivo de logs con timestamp."""
     timestamp = datetime.now(tz=UTC_MINUS_3).strftime("%Y-%m-%d %H:%M:%S")
     message = f"[{timestamp}] {message}\n"
@@ -36,8 +48,13 @@ def print_log(message):
     with open(LOG_FILE, "a", encoding="utf-8") as log_file:
         log_file.write(message)
 
-def get_timestamp() -> float:
-    return _ensure_timezone(datetime.now()).timestamp()
+def init_logfile():
+    if os.path.isfile(LOG_FILE): return print_log("[INFO] Nueva sesión iniciada.")
+    
+    with open(LOG_FILE, "w") as file:
+        timestamp = datetime.now(tz=UTC_MINUS_3).strftime("%Y-%m-%d %H:%M:%S")
+        file.write(f"[{timestamp}][INFO] Sistema inicializado.\n")
+init_logfile()
 
 def parse_date(date_input) -> datetime:
     """Convierte una fecha en distintos formatos a un objeto datetime sin zona horaria."""
@@ -57,14 +74,6 @@ def parse_date(date_input) -> datetime:
 
     raise ValueError(f"❌ Formato de fecha no reconocido: {date_input}, type={type(date_input)}")
 
-def _ensure_timezone(dt: datetime) -> datetime:
-    """Asegura que el datetime tenga la zona horaria UTC-3 y lo convierte a UTC sin tzinfo."""
-    if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=UTC_MINUS_3)
-    else:
-        dt = dt.astimezone(UTC_MINUS_3)
-    return dt.astimezone(timezone.utc).replace(tzinfo=None)
-
 def _parse_timestamp(timestamp: float) -> datetime:
     """Convierte un timestamp (segundos o milisegundos) en un objeto datetime UTC sin tzinfo."""
     if timestamp > 10**10:  # Si es mayor a 10 dígitos, asumimos que está en milisegundos
@@ -75,9 +84,6 @@ def _parse_timestamp(timestamp: float) -> datetime:
 def _parse_string(date_str: str) -> datetime:
     """Convierte una cadena de texto en un objeto datetime UTC sin tzinfo."""
     date_str = date_str.strip()
-    
-    if date_str.isdecimal():
-        return parse_date(int(date_str))
 
     date_formats = ["%d/%m/%Y", "%m/%d/%Y %H:%M:%S", "%m/%d/%Y", "%Y-%m-%d", "%Y-%m-%d %H:%M:%S"]
     
@@ -91,22 +97,5 @@ def _parse_string(date_str: str) -> datetime:
     raise ValueError(f"❌ Formato de fecha inválido: {date_str}, type={type(date_str)}")
 
 
-def get_tag(cliente:Cliente) -> tuple[str, ...]:
-    DAYS_30 = timedelta(days=30)
-    DAYS_15 = timedelta(days=15)
-    TODAY = datetime.now(tz=UTC_MINUS_3)
-    
-    if cliente.lastPayment is None or cliente.needCheck:
-        return ("need_check", )
-    
-    # Asegurar que cliente.lastPayment tenga la misma zona horaria
-    lastPayment = cliente.lastPayment
-    if lastPayment.tzinfo is None:
-        lastPayment = lastPayment.replace(tzinfo=UTC_MINUS_3)
 
-    time_diff = TODAY - lastPayment
-    if time_diff > DAYS_30:
-        return ("expired", )
-    elif time_diff > DAYS_15:
-        return ("to_expire", )
-    return ("", )
+

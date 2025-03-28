@@ -27,7 +27,7 @@ def sync_clients():
     errores = []
 
     try:
-        for idx, cliente in enumerate(clientes_new[:1], start=2):  # Saltar encabezado
+        for idx, cliente in enumerate(clientes_new[1:], start=2):  # Saltar encabezado
             try:
                 createdAt, email, fullName, birthDate, gender, document, phone,\
                 address, goal, medicalHistory, medication, recentInjury,\
@@ -70,7 +70,7 @@ def sync_clients():
                     medicalCertificate=medicalCertificate
                 )
             except Exception as e:
-                error_msg = f"Error al crear cliente y ficha {idx}: {e}"
+                error_msg = f"Error al crear cliente y ficha, fila:{idx} exception:{e}"
                 print_log(f"❌ {error_msg}")
                 errores.append((idx, error_msg))
                 continue

@@ -16,7 +16,7 @@ class SideBar(CTkFrame):
             IconButton(self, f'assets/icons/icons8-currency-{size}.png', 'PaymentsFrame', self.controller), # Caja
             IconButton(self, f'assets/icons/icons8-whatsapp-{size}.png', 'whatsapp', self.controller), # Whatsapp
             IconButton(self, f'assets/icons/icons8-ajustes-{size}.png', 'ConfigFrame', self.controller), # Configuración
-            IconButton(self, f'assets/icons/icons8-exit-{size}.png', 'salir', callback=self.master.quit) # Salir
+            IconButton(self, f'assets/icons/icons8-exit-{size}.png', 'salir', callback=self.master.destroy) # Salir
         ]
 
         self.icons[0].pack(side="top", padx=1, pady=16) # Inicio

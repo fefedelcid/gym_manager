@@ -1,4 +1,5 @@
-from src.utils import parse_date
+from src.utils import parse_date, UTC_MINUS_3
+from datetime import timedelta, datetime
 import re
 
 def validate_phone(phone):
@@ -34,3 +35,23 @@ def validate_date(date_input):
 def validate_text(text, min_length=1, max_length=255):
     """Valida un texto con longitud dentro de un rango específico."""
     return isinstance(text, str) and min_length <= len(text.strip()) <= max_length
+
+def get_tag(cliente) -> tuple[str, ...]:
+    DAYS_30 = timedelta(days=30)
+    DAYS_15 = timedelta(days=15)
+    TODAY = datetime.now(tz=UTC_MINUS_3)
+    
+    if cliente.lastPayment is None or cliente.needCheck:
+        return ("need_check", )
+    
+    # Asegurar que cliente.lastPayment tenga la misma zona horaria
+    lastPayment = cliente.lastPayment
+    if lastPayment.tzinfo is None:
+        lastPayment = lastPayment.replace(tzinfo=UTC_MINUS_3)
+
+    time_diff = TODAY - lastPayment
+    if time_diff > DAYS_30:
+        return ("expired", )
+    elif time_diff > DAYS_15:
+        return ("to_expire", )
+    return ("", )

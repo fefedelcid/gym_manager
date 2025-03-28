@@ -2,7 +2,7 @@ from src.config.settings import WIDTH, HEIGHT, APPEARANCE_MODE, COLOR_THEME, TIT
 from customtkinter import CTk, set_appearance_mode, set_default_color_theme
 from src.gui import HomeFrame, ClientsFrame, PaymentsFrame, ConfigFrame, DetailsFrame
 from src.gui.widgets import MainFrame, SideBar
-from src.utils import get_center
+from src.utils import get_center, print_log
 
 set_appearance_mode(APPEARANCE_MODE)
 set_default_color_theme(COLOR_THEME)
@@ -44,3 +44,7 @@ class MainWindow(CTk):
     def update_tables(self):
         self.clients_frame.table.update_table()
         self.payments_frame.table.update_table()
+
+    def destroy(self):
+        print_log("[INFO] Cerrando aplicación.")
+        super().destroy()
