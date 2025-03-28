@@ -73,19 +73,22 @@ class DetailsFrame(CTkFrame):
             self.btn_pagos.state=True
             self.btn_pagos.update_color()
 
-    def populate(self, document):
+    def populate(self, document=None):
         """Este método completa los 3 formularios según el cliente seleccionado."""
-        db = Database()
-        client = db.get_client(document)
-        self.clientId = client.id
-        ficha = db.get_ficha(client.id)
-        pagos = db.get_payments(client.id)
+        if document:
+            db = Database()
+            client = db.get_client(document)
+            self.clientId = client.id
+            ficha = db.get_ficha(client.id)
+            pagos = db.get_payments(client.id)
 
-        self.title.configure(text=client.fullName)
+            self.title.configure(text=client.fullName)
+        else:
+            self.title.configure(text="Agregar Cliente")
 
-        self.client_form.generate_form(client)
-        self.ficha_form.generate_form(ficha)
-        self.pagos_form.update_table(pagos)
+        self.client_form.generate_form(None if document is None else client)
+        self.ficha_form.generate_form(None if document is None else ficha)
+        self.pagos_form.update_table([] if document is None else pagos)
         
         self.selected_form("ClientForm")
 

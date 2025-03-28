@@ -11,6 +11,7 @@ class SideBar(CTkFrame):
 
         self.icons = [
             IconButton(self, f'assets/icons/icons8-casa-{size}.png', 'HomeFrame', self.controller), # Inicio
+            IconButton(self, f'assets/icons/icons8-add-user-{size}.png', 'NewUser', self.controller), # Agregar usuario
             IconButton(self, f'assets/icons/icons8-contactos-{size}.png', 'StudentsFrame', self.controller), # Alumnos
             IconButton(self, f'assets/icons/icons8-info-{size}.png', 'DetailsFrame', self.controller), # Detalles
             IconButton(self, f'assets/icons/icons8-currency-{size}.png', 'PaymentsFrame', self.controller), # Caja
@@ -20,11 +21,12 @@ class SideBar(CTkFrame):
         ]
 
         self.icons[0].pack(side="top", padx=1, pady=16) # Inicio
-        self.icons[1].pack(side="top", padx=1, pady=16) # Alumnos
-        self.icons[3].pack(side="top", padx=1, pady=16) # Caja
-        self.icons[2].pack(side="top", padx=1, pady=16) # Detalles
-        # self.icons[4].pack(side="top", padx=1, pady=16) # Whatsapp
-        self.icons[6].pack(side="bottom", padx=1, pady=16) # Salir
-        # self.icons[5].pack(side="bottom", padx=1, pady=16) # Configuración
+        self.icons[1].pack(side="top", padx=1, pady=16) # Agregar usuario
+        self.icons[2].pack(side="top", padx=1, pady=16) # Alumnos
+        self.icons[4].pack(side="top", padx=1, pady=16) # Caja
+        self.icons[3].pack(side="top", padx=1, pady=16) # Detalles
+        # self.icons[5].pack(side="top", padx=1, pady=16) # Whatsapp
+        self.icons[7].pack(side="bottom", padx=1, pady=16) # Salir
+        # self.icons[6].pack(side="bottom", padx=1, pady=16) # Configuración
 
 

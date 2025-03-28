@@ -57,18 +57,18 @@ class ClienteForm(CTkScrollableFrame, BaseForm):
         CTkScrollableFrame.__init__(self, master, *args, **kwargs)
         BaseForm.__init__(self, master, name, *args, **kwargs)
 
-    def generate_form(self, client:Cliente):
+    def generate_form(self, client:Cliente=None):
         self.refresh()
         self.add_switch(self.guardar_cambios)
-        self.add_field("Inscripto desde", client.createdAt)
-        self.add_field("Nombre Completo", client.fullName)
-        self.add_field("Fecha de Nacimiento", client.birthDate)
-        self.add_field("Documento", client.document)
-        self.add_field("Género", client.gender)
-        self.add_field("Email", client.email)
-        self.add_field("Teléfono", client.phone)
-        self.add_field("Dirección", client.address)
-        self.add_field("Último pago", client.lastPayment)
+        self.add_field("Inscripto desde", "" if client is None else client.createdAt)
+        self.add_field("Nombre Completo", "" if client is None else client.fullName)
+        self.add_field("Fecha de Nacimiento", "" if client is None else client.birthDate)
+        self.add_field("Documento", "" if client is None else client.document)
+        self.add_field("Género", "" if client is None else client.gender)
+        self.add_field("Email", "" if client is None else client.email)
+        self.add_field("Teléfono", "" if client is None else client.phone)
+        self.add_field("Dirección", "" if client is None else client.address)
+        self.add_field("Último pago", "" if client is None else client.lastPayment)
 
     def guardar_cambios(self):
         datos = {
@@ -90,14 +90,14 @@ class FichaForm(CTkScrollableFrame, BaseForm):
         CTkScrollableFrame.__init__(self, master, *args, **kwargs)
         BaseForm.__init__(self, master, name, *args, **kwargs)
 
-    def generate_form(self, ficha:Ficha):
+    def generate_form(self, ficha:Ficha=None):
         self.refresh()
         self.add_switch(self.guardar_cambios)
-        self.add_field("Historial Médico", ficha.medicalHistory)
-        self.add_field("Medicación", ficha.medication)
-        self.add_field("Lesión Reciente", ficha.recentInjury)
-        self.add_field("Contacto de Emergencia", ficha.emergencyContact)
-        self.add_field("Certificado Médico", ficha.medicalCertificate)
+        self.add_field("Historial Médico", "" if ficha is None else ficha.medicalHistory)
+        self.add_field("Medicación", "" if ficha is None else ficha.medication)
+        self.add_field("Lesión Reciente", "" if ficha is None else ficha.recentInjury)
+        self.add_field("Contacto de Emergencia", "" if ficha is None else ficha.emergencyContact)
+        self.add_field("Certificado Médico", "" if ficha is None else ficha.medicalCertificate)
 
     def guardar_cambios(self):
         ficha = {
@@ -186,7 +186,7 @@ class PagosForm(CTkFrame, BaseForm):
         except Exception as e:
             print_log(f"[Exception] on: PagosForm.item_selected, {e}")
 
-    def update_table(self, movimientos:list[Movimiento]):
+    def update_table(self, movimientos:list[Movimiento]=[]):
         try:
             self.table.delete(*self.table.get_children()) # Limpiar la tabla
             for pago in movimientos:

@@ -23,9 +23,9 @@ class MainFrame(CTkFrame):
         for frame in self.frames.values():
             frame.pack_forget()
         try:
-            print_log(f"MainFrame.show_frame, frame:{name}, data:{data}")
+            print_log(f"[INFO][MainFrame.show_frame] Frame seleccionado:{name}, data:{data}")
             if name=="DetailsFrame" and data:
                 self.frames[name].populate(data)
             self.frames[name].pack(fill="both", expand=True)
-        except KeyError:
-            print_log("Pestaña no encontrada.")
+        except KeyError as e:
+            print_log(f"[ERROR] Pestaña no encontrada: {e}")
