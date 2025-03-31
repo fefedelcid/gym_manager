@@ -174,8 +174,9 @@ def sync_clients():
             if document in registered_not_in_db: # No añadidos a la bd
                 # Registrar en la base de datos
                 try:
-                    db.add_client(client, ficha)
-                    print_log(f"✅ Cliente agregado con éxito: ({document})")
+                    if db.add_client(client, ficha):
+                        print_log(f"✅ Cliente agregado con éxito: ({document})")
+                    else: raise Exception
                 except Exception as e:
                     error_msg = f"Error al insertar en DB, fila {idx}: {e}, type:{type(e)}"
                     print_log(f"❌ {error_msg}")
