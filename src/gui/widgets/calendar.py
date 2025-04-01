@@ -1,6 +1,6 @@
 from customtkinter import CTkFrame, CTkEntry
 from datetime import datetime
-
+from src.utils.helpers import _ensure_timezone
 
 class EntryDate(CTkFrame):
     def __init__(self, master, *args, **kwargs):
@@ -71,6 +71,6 @@ class EntryDate(CTkFrame):
             month = int(self.month_entry.get())
             year = int(self.year_entry.get())
             self.clear()
-            return datetime(year, month, day).date()
+            return _ensure_timezone(datetime(year, month, day).date())
         except ValueError:
             return None
