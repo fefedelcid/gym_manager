@@ -37,7 +37,7 @@ def get_google_credentials():
     # Si no hay credenciales o están expiradas, autenticamos de nuevo
     if not creds or not creds.valid:
         try:
-            if creds and creds.expired and creds.refresh_token or not has_required_scopes(creds):
+            if creds and creds.expired and creds.refresh_token and has_required_scopes(creds):
                 print_log("[WARNING] Token expirado.")
                 print_log("[INFO] 🔄 Intentando refrescar...")
                 creds.refresh(Request())
