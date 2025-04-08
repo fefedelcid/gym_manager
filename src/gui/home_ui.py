@@ -16,10 +16,10 @@ class HomeFrame(CTkFrame):
         self.subtitle.pack()
 
         self.frame = CTkFrame(self, fg_color="transparent")
-        self.frame.pack(side="bottom", fill="x")
+        self.frame.pack(side="bottom", pady=100)
 
-        self.sync_btn = CTkButton(self.frame, font=('Roboto', 16), text="Sincronizar", command=sync_google_sheets)
-        self.sync_btn.grid(column=0, row=0, sticky="e", ipadx=30)
+        self.sync_btn = CTkButton(self.frame, height=50, font=('Roboto', 16), text="Sincronizar\nFichas", command=sync_google_sheets)
+        self.sync_btn.grid(column=0, row=0, sticky="e", ipadx=15, padx=50)
 
-        self.send_btn = CTkButton(self.frame, font=('Roboto', 16), text="Enviar Logs", command=send_today_log)
-        self.send_btn.grid(column=1, row=0, sticky="w", ipadx=30)
+        self.send_btn = CTkButton(self.frame, height=50, font=('Roboto', 16), text="Enviar Logs", command=send_today_log)
+        self.send_btn.grid(column=1, row=0, sticky="w", ipadx=15, padx=50)
