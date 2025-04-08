@@ -48,12 +48,12 @@ def get_google_credentials():
                 pickle.dump(creds, token)
         
         except RefreshError:
-            print_log("❌ Error: Token expirado o revocado. Se requiere autenticación nuevamente.")
+            print_log("[ERROR]: Token expirado o revocado. Se requiere autenticación nuevamente.")
             os.remove(TOKEN_PATH)
             return get_google_credentials()  # Reintentar autenticación
         
         except Exception as e:
-            print_log(f"❌ Error inesperado en la autenticación: {e}")
+            print_log(f"[ERROR] inesperado en la autenticación: {e}")
             return None  # Retorna None en caso de error
 
     return creds

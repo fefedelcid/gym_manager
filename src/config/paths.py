@@ -7,6 +7,9 @@ VENV_PATH = os.path.join(".venv", "Scripts", "python.exe") if os.name == "nt" el
 
 
 # Rutas importantes
+LOGS_DIR = os.path.join(REPO_PATH, "logs")
+os.makedirs(LOGS_DIR, exist_ok=True)
+
 CONFIG_DIR = os.path.join(BASE_DIR, "config")
 VERSION_FILE = os.path.join(BASE_DIR, "../version.json")
 SECRETS_DIR = os.path.join(CONFIG_DIR, "secrets")
@@ -28,5 +31,7 @@ if not os.path.exists(CREDENTIALS_PATH):
 SCOPES = [
     # "https://www.googleapis.com/auth/forms.body",
     "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive.metadata.readonly"
+    "https://www.googleapis.com/auth/drive.metadata.readonly",
+    "https://www.googleapis.com/auth/gmail.send"
+
 ]

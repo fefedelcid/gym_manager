@@ -33,7 +33,7 @@ def delete_records(records, sheet, spreadsheetId, _from=NUEVOS):
             ).execute()
         print_log(f"🗑️ {len(records)} filas eliminadas de '{_from}'.")
     except Exception as e:
-        print_log(f"❌ Error al eliminar filas de '{_from}': {e}")
+        print_log(f"[ERROR] al eliminar filas de '{_from}': {e}")
 
 
 def move_clients(clients, spreadsheetId, sheet):
@@ -46,7 +46,7 @@ def move_clients(clients, spreadsheetId, sheet):
         ).execute()
         print_log(f"✅ {len(clients)} clientes movidos de '{NUEVOS}' a '{REGISTRADOS}'.")
     except Exception as e:
-        print_log(f"❌ Error al mover datos de '{NUEVOS}' a '{REGISTRADOS}': {e}")
+        print_log(f"[ERROR] al mover datos de '{NUEVOS}' a '{REGISTRADOS}': {e}")
     
 
 def process_client(cliente, idx):
@@ -65,7 +65,7 @@ def process_client(cliente, idx):
             emergencyContact = cliente
             medicalCertificate = ""
     except Exception as e:
-        error_msg = f"Error al desempaquetar datos en fila {idx}: {e}"
+        error_msg = f"[ERROR] al desempaquetar datos en fila {idx}: {e}"
         print_log(f"❌ {error_msg}")
         return None, None, None
 
@@ -98,7 +98,7 @@ def process_client(cliente, idx):
 
         return new_client, ficha, document
     except Exception as e:
-        error_msg = f"Error al crear cliente y ficha, fila {idx}: {e}"
+        error_msg = f"[ERROR] al crear cliente y ficha, fila {idx}: {e}"
         print_log(f"❌ {error_msg}")
         return None, None, None
 
@@ -156,7 +156,7 @@ def sync_clients():
                 db.add_client(document, ficha)
                 print_log(f"✅ Cliente agregado con éxito: ({document})")
             except Exception as e:
-                error_msg = f"Error al insertar en DB, fila {idx}: {type(e)}"
+                error_msg = f"[ERROR] al insertar en DB, fila {idx}: {type(e)}"
                 print_log(f"❌ {error_msg}")
 
         clientes_procesados.append(cliente)
@@ -178,7 +178,7 @@ def sync_clients():
                         print_log(f"✅ Cliente agregado con éxito: ({document})")
                     else: raise Exception
                 except Exception as e:
-                    error_msg = f"Error al insertar en DB, fila {idx}: {e}, type:{type(e)}"
+                    error_msg = f"[ERROR] al insertar en DB, fila {idx}: {e}, type:{type(e)}"
                     print_log(f"❌ {error_msg}")
         else:
             error_msg = f"⚠️ Duplicado detectado en fila {idx}: {document}"
@@ -199,7 +199,7 @@ def sync_google_sheets():
         sync_clients()
         print_log("✅ Sincronización completada.")
     except Exception as e:
-        error_msg = f"❌ Error durante la sincronización: {e} {type(e)}"
+        error_msg = f"[ERROR] durante la sincronización: {e} {type(e)}"
         print_log(error_msg)
 
 

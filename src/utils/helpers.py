@@ -1,4 +1,5 @@
 from datetime import datetime, timezone, timedelta, date
+from src.config import LOGS_DIR
 import os
 
 def get_center(widget, width: float = 0, height: float = 0, w_hint: float = None, h_hint: float = None) -> str:
@@ -38,7 +39,7 @@ SESSION_TIMESTAMP = datetime.fromtimestamp(get_timestamp())
 
 # Inicializar archivo de logs
 string = datetime.strftime(SESSION_TIMESTAMP, "%Y.%m.%d")
-LOG_FILE = f"{string}.log"
+LOG_FILE = os.path.join(LOGS_DIR, f"{string}.log")
 
 def print_log(message:str):
     """Escribe un mensaje en el archivo de logs con timestamp."""
@@ -49,7 +50,10 @@ def print_log(message:str):
         log_file.write(message)
 
 def init_logfile():
-    if os.path.isfile(LOG_FILE): return print_log("[INFO] Nueva sesión iniciada.")
+    if os.path.isfile(LOG_FILE):
+        with open(LOG_FILE, "a", encoding="utf-8") as file:
+            file.write(f'{"#"*110}\n{"#"*110}\n')
+        return print_log("[INFO] Nueva sesión iniciada.")
     
     with open(LOG_FILE, "w") as file:
         timestamp = datetime.now(tz=UTC_MINUS_3).strftime("%Y-%m-%d %H:%M:%S")

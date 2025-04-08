@@ -12,7 +12,7 @@ def init_db():
     try:
         SQLModel.metadata.create_all(engine)
     except Exception as e:
-        print_log(f"Error al inicializar la base de datos: {e}\nTraceback: {e.with_traceback}")
+        print_log(f"[ERROR] al inicializar la base de datos: {e}\nTraceback: {e.with_traceback}")
 
 
 def get_session():
@@ -20,7 +20,7 @@ def get_session():
     try:
         return Session(engine)
     except Exception as e:
-        print_log(f"Error al crear la sesión: {e}\nTraceback: {e.with_traceback}")
+        print_log(f"[ERROR] al crear la sesión: {e}\nTraceback: {e.with_traceback}")
         return None
 
 
@@ -43,7 +43,7 @@ class Database:
                     session.refresh(ficha)
             return cliente
         except Exception as e:
-            print_log(f"Error al agregar cliente: {e}\nTraceback: {e.with_traceback}")
+            print_log(f"[ERROR] al agregar cliente: {e}\nTraceback: {e.with_traceback}")
             return None
 
     def get_client(self, document: str):
@@ -53,7 +53,7 @@ class Database:
                 statement = select(Cliente).where(Cliente.document == document)
                 return session.exec(statement).first()
         except Exception as e:
-            print_log(f"Error al obtener cliente por documento: {e}\nTraceback: {e.with_traceback}")
+            print_log(f"[ERROR] al obtener cliente por documento: {e}\nTraceback: {e.with_traceback}")
             return None
 
     def search_client(self, search_term: str):
@@ -68,7 +68,7 @@ class Database:
                 )
                 return session.exec(statement).all()  # Retorna todos los resultados que coinciden
         except Exception as e:
-            print_log(f"Error al obtener cliente: {e}\nTraceback: {e.with_traceback}")
+            print_log(f"[ERROR] al obtener cliente: {e}\nTraceback: {e.with_traceback}")
             return None
 
     def get_client_by_id(self, clientId: int):
@@ -77,7 +77,7 @@ class Database:
             with get_session() as session:
                 return session.get(Cliente, clientId)
         except Exception as e:
-            print_log(f"Error al obtener cliente por ID: {e}\nTraceback: {e.with_traceback}")
+            print_log(f"[ERROR] al obtener cliente por ID: {e}\nTraceback: {e.with_traceback}")
             return None
 
     def get_all_clients(self):
@@ -87,7 +87,7 @@ class Database:
                 statement = select(Cliente).order_by(Cliente.createdAt)
                 return session.exec(statement).all()
         except Exception as e:
-            print_log(f"Error al obtener todos los clientes: {e}\nTraceback: {e.with_traceback}")
+            print_log(f"[ERROR] al obtener todos los clientes: {e}\nTraceback: {e.with_traceback}")
             return []
 
     def add_payment(self, clientId: int, amount: float, date:datetime=None):
@@ -110,7 +110,7 @@ class Database:
                 session.refresh(payment)
                 return payment
         except Exception as e:
-            print_log(f"Error al agregar pago: {e}\nTraceback: {e.with_traceback}")
+            print_log(f"[ERROR] al agregar pago: {e}\nTraceback: {e.with_traceback}")
             return None
         
     def get_ficha(self, clientId:int):
@@ -119,7 +119,7 @@ class Database:
                 statement = select(Ficha).where(Ficha.clientId == clientId)
                 return session.exec(statement).first()
         except Exception as e:
-            print_log(f"Error al obtener ficha del cliente {clientId}: {e}\nTraceback: {e.with_traceback}")
+            print_log(f"[ERROR] al obtener ficha del cliente {clientId}: {e}\nTraceback: {e.with_traceback}")
             return None
 
     def get_payments(self, clientId: int):
@@ -129,7 +129,7 @@ class Database:
                 statement = select(Movimiento).where(Movimiento.clientId == clientId)
                 return session.exec(statement).all()
         except Exception as e:
-            print_log(f"Error al obtener pagos del cliente {clientId}: {e}\nTraceback: {e.with_traceback}")
+            print_log(f"[ERROR] al obtener pagos del cliente {clientId}: {e}\nTraceback: {e.with_traceback}")
             return []
 
     def get_all_payments(self):
@@ -139,7 +139,7 @@ class Database:
                 statement = select(Movimiento).order_by(Movimiento.createdAt)
                 return session.exec(statement).all()
         except Exception as e:
-            print_log(f"Error al obtener todos los pagos: {e}\nTraceback: {e.with_traceback}")
+            print_log(f"[ERROR] al obtener todos los pagos: {e}\nTraceback: {e.with_traceback}")
             return []
 
     def update_client(self, clientId: int, **kwargs):
@@ -164,7 +164,7 @@ class Database:
                 session.refresh(client)
                 return client # Devolver cliente actualizado
         except Exception as e:
-            print_log(f"Error al actualizar datos del cliente {clientId}: {e}\nTraceback: {e.with_traceback}")
+            print_log(f"[ERROR] al actualizar datos del cliente {clientId}: {e}\nTraceback: {e.with_traceback}")
             return None
 
     def update_ficha(self, clientId: int, **kwargs):
@@ -184,7 +184,7 @@ class Database:
                 session.refresh(ficha)
                 return ficha # Devolver ficha actualizada
         except Exception as e:
-            print_log(f"Error al actualizar ficha médica del cliente {clientId}: {e}\nTraceback: {e.with_traceback}")
+            print_log(f"[ERROR] al actualizar ficha médica del cliente {clientId}: {e}\nTraceback: {e.with_traceback}")
             return None
 
     def delete_client(self, clientId: int):
@@ -212,7 +212,7 @@ class Database:
                 session.commit()
                 return True # Cliente eliminado correctamente
         except Exception as e:
-            print_log(f"Error al eliminar cliente {clientId}: {e}\nTraceback: {e.with_traceback}")
+            print_log(f"[ERROR] al eliminar cliente {clientId}: {e}\nTraceback: {e.with_traceback}")
             return False
         
 if __name__=="__main__":

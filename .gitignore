@@ -1,6 +1,7 @@
 /old/**
 **/__pycache__/**
 **/session/**
+**/logs/**
 **/build/**
 **/dist/**
 .venv/**

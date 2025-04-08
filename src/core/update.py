@@ -14,7 +14,7 @@ def get_current_version():
     except FileNotFoundError:
         return "0.0.0"
     except Exception as e:
-        print_log(f"Error al leer version.json: {e}")
+        print_log(f"[ERROR] al leer version.json: {e}")
         return "0.0.0"
 
 
@@ -38,7 +38,7 @@ def check_for_updates():
             print_log(f"✅ La aplicación está actualizada. {current_version} / {latest}")
 
     except Exception as e:
-        print_log(f"❌ Error al buscar actualizaciones: {e}")
+        print_log(f"[ERROR] al buscar actualizaciones: {e}")
 
 
 def update_app(current, latest):
@@ -57,7 +57,7 @@ def update_app(current, latest):
         print_log("🔄 Reiniciando la aplicación...")
         os.execv(sys.executable, "python", sys.argv)
     except subprocess.CalledProcessError as e:
-        print_log(f"❌ Error al actualizar: {e}")
+        print_log(f"[ERROR] al actualizar: {e}")
 
 
 if __name__ == "__main__":
