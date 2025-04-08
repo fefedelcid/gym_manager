@@ -15,6 +15,10 @@ if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 from config.paths import CREDENTIALS_PATH, SCOPES, TOKEN_PATH
 
+REQUIRED_SCOPES = set(SCOPES)  # tus scopes necesarios
+
+def has_required_scopes(creds):
+    return creds and creds.scopes and REQUIRED_SCOPES.issubset(set(creds.scopes))
 
 def get_google_credentials():
     """Autentica al usuario y devuelve las credenciales de Google OAuth."""
@@ -33,7 +37,7 @@ def get_google_credentials():
     # Si no hay credenciales o están expiradas, autenticamos de nuevo
     if not creds or not creds.valid:
         try:
-            if creds and creds.expired and creds.refresh_token:
+            if creds and creds.expired and creds.refresh_token or not has_required_scopes(creds):
                 print_log("[WARNING] Token expirado.")
                 print_log("[INFO] 🔄 Intentando refrescar...")
                 creds.refresh(Request())
