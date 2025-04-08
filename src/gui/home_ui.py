@@ -1,5 +1,6 @@
 from customtkinter import CTkFrame, CTkLabel, CTkButton
 from src.core import sync_google_sheets
+from src.utils.logs_tracker import send_today_log
 
 
 class HomeFrame(CTkFrame):
@@ -14,5 +15,11 @@ class HomeFrame(CTkFrame):
         self.subtitle = CTkLabel(self, font=('Roboto', 16), text="Sistema Administrativo")
         self.subtitle.pack()
 
-        self.sync_btn = CTkButton(self, font=('Roboto', 16), text="Sincronizar", command=sync_google_sheets)
-        self.sync_btn.pack(side="bottom", pady=50)
+        self.frame = CTkFrame(self, fg_color="transparent")
+        self.frame.pack(side="bottom", fill="x")
+
+        self.sync_btn = CTkButton(self.frame, font=('Roboto', 16), text="Sincronizar", command=sync_google_sheets)
+        self.sync_btn.grid(column=0, row=0, sticky="e", ipadx=30)
+
+        self.send_btn = CTkButton(self.frame, font=('Roboto', 16), text="Enviar Logs", command=send_today_log)
+        self.send_btn.grid(column=1, row=0, sticky="w", ipadx=30)
