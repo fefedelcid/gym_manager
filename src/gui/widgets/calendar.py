@@ -71,6 +71,6 @@ class EntryDate(CTkFrame):
             month = int(self.month_entry.get())
             year = int(self.year_entry.get())
             self.clear()
-            return _ensure_timezone(datetime(year, month, day).date())
+            return _ensure_timezone(datetime(year, month, day))
         except ValueError:
             return None

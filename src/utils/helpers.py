@@ -27,11 +27,15 @@ UTC_MINUS_3 = timezone(timedelta(hours=-3))
 
 def _ensure_timezone(dt: datetime) -> datetime:
     """Asegura que el datetime tenga la zona horaria UTC-3 y lo convierte a UTC sin tzinfo."""
-    if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=UTC_MINUS_3)
-    else:
-        dt = dt.astimezone(UTC_MINUS_3)
-    return dt.astimezone(timezone.utc).replace(tzinfo=None)
+    try:
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=UTC_MINUS_3)
+        else:
+            dt = dt.astimezone(UTC_MINUS_3)
+        return dt.astimezone(timezone.utc).replace(tzinfo=None)
+    except AttributeError as e:
+        print_log(f"[WARNING] on _ensure_timezone, exception: {e}")
+        raise e
 
 def get_timestamp() -> float:
     return _ensure_timezone(datetime.now()).timestamp()

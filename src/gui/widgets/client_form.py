@@ -43,9 +43,9 @@ class BaseForm:
             self.btn.configure(text="Editar" if state=="disabled" else "Guardar")
             self.btn.state = self.enabled
             if not self.enabled and cb: cb()
-        for entry in self.fields.values():
-            entry.configure(state=state)
-
+        for key, entry in self.fields.items():
+            if key in ["Último pago", "Inscripto desde", "Email"]: continue
+            entry.configure(state=state, border_color='#ff3636' if state=="normal" else '#565B5E')
     def refresh(self):
         for widget in self.winfo_children():
             widget.destroy()
