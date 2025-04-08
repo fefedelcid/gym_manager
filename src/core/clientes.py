@@ -31,7 +31,7 @@ def delete_records(records, sheet, spreadsheetId, _from=NUEVOS):
                     }]
                 }
             ).execute()
-        print_log(f"🗑️ {len(records)} filas eliminadas de '{_from}'.")
+        print_log(f"[INFO] {len(records)} filas eliminadas de '{_from}'.")
     except Exception as e:
         print_log(f"[ERROR] al eliminar filas de '{_from}': {e}")
 
@@ -44,7 +44,7 @@ def move_clients(clients, spreadsheetId, sheet):
             valueInputOption="RAW",
             body={"values": clients}
         ).execute()
-        print_log(f"✅ {len(clients)} clientes movidos de '{NUEVOS}' a '{REGISTRADOS}'.")
+        print_log(f"[INFO] {len(clients)} clientes movidos de '{NUEVOS}' a '{REGISTRADOS}'.")
     except Exception as e:
         print_log(f"[ERROR] al mover datos de '{NUEVOS}' a '{REGISTRADOS}': {e}")
     
@@ -66,7 +66,7 @@ def process_client(cliente, idx):
             medicalCertificate = ""
     except Exception as e:
         error_msg = f"[ERROR] al desempaquetar datos en fila {idx}: {e}"
-        print_log(f"❌ {error_msg}")
+        print_log(f"{error_msg}")
         return None, None, None
 
     # Normalizar documento
@@ -99,7 +99,7 @@ def process_client(cliente, idx):
         return new_client, ficha, document
     except Exception as e:
         error_msg = f"[ERROR] al crear cliente y ficha, fila {idx}: {e}"
-        print_log(f"❌ {error_msg}")
+        print_log(f"{error_msg}")
         return None, None, None
 
 
@@ -154,10 +154,10 @@ def sync_clients():
             # Registrar en la base de datos
             try:
                 db.add_client(document, ficha)
-                print_log(f"✅ Cliente agregado con éxito: ({document})")
+                print_log(f"[INFO] Cliente agregado con éxito: ({document})")
             except Exception as e:
                 error_msg = f"[ERROR] al insertar en DB, fila {idx}: {type(e)}"
-                print_log(f"❌ {error_msg}")
+                print_log(f"{error_msg}")
 
         clientes_procesados.append(cliente)
         filas_procesadas.append(idx)
@@ -175,11 +175,11 @@ def sync_clients():
                 # Registrar en la base de datos
                 try:
                     if db.add_client(client, ficha):
-                        print_log(f"✅ Cliente agregado con éxito: ({document})")
+                        print_log(f"[INFO] Cliente agregado con éxito: ({document})")
                     else: raise Exception
                 except Exception as e:
                     error_msg = f"[ERROR] al insertar en DB, fila {idx}: {e}, type:{type(e)}"
-                    print_log(f"❌ {error_msg}")
+                    print_log(f"{error_msg}")
         else:
             error_msg = f"⚠️ Duplicado detectado en fila {idx}: {document}"
             print_log(error_msg)
@@ -195,9 +195,9 @@ def sync_clients():
 def sync_google_sheets():
     """Ejecuta la sincronización con Google Sheets."""
     try:
-        print_log("🔄 Iniciando sincronización con Google Sheets...")
+        print_log("[INFO] Iniciando sincronización con Google Sheets...")
         sync_clients()
-        print_log("✅ Sincronización completada.")
+        print_log("[INFO] Sincronización completada.")
     except Exception as e:
         error_msg = f"[ERROR] durante la sincronización: {e} {type(e)}"
         print_log(error_msg)

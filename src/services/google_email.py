@@ -27,7 +27,7 @@ def send_email_with_attachments(creds, to_email, subject, body_text, attachments
         # Adjuntar archivos
         for filepath in attachments:
             if not os.path.isfile(filepath):
-                print_log(f"❌ Archivo no encontrado: {filepath}")
+                print_log(f"[ERROR] Archivo no encontrado: {filepath}")
                 continue
 
             mime_type, _ = guess_type(filepath)
@@ -49,7 +49,7 @@ def send_email_with_attachments(creds, to_email, subject, body_text, attachments
             body={"raw": encoded_message}
         ).execute()
 
-        print_log(f"📤 Correo enviado con ID: {send_message['id']}")
+        print_log(f"[INFO] 📤 Correo enviado con ID: {send_message['id']}")
         return True
 
     except Exception as e:

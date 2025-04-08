@@ -20,7 +20,7 @@ def get_current_version():
 
 def check_for_updates():
     try:
-        print_log("🔍 Buscando actualizaciones...")
+        print_log("[INFO] 🔍 Buscando actualizaciones...")
 
         # Obtener versión instalada
         current_version = get_current_version()
@@ -32,10 +32,10 @@ def check_for_updates():
 
         # Comparar versiones
         if version.parse(latest) > version.parse(current_version):
-            print_log(f"🚀 Nueva versión disponible: {latest}")
+            print_log(f"[INFO] 🚀 Nueva versión disponible: {latest}")
             update_app(current_version, latest)
         else:
-            print_log(f"✅ La aplicación está actualizada. {current_version} / {latest}")
+            print_log(f"[INFO] La aplicación está actualizada. {current_version} / {latest}")
 
     except Exception as e:
         print_log(f"[ERROR] al buscar actualizaciones: {e}")
@@ -43,18 +43,18 @@ def check_for_updates():
 
 def update_app(current, latest):
     if not os.path.exists(os.path.join(REPO_PATH, ".git")):
-        print_log("❌ No es un repositorio git. No se pueden aplicar actualizaciones.")
+        print_log("[ERROR] No es un repositorio git. No se pueden aplicar actualizaciones.")
         return
 
     # Intento hacer pull para actualizar solo los archivos modificados
     try:
-        print_log(f"🔄 Actualizando v{current} a v{latest}...")
+        print_log(f"[INFO] 🔄 Actualizando v{current} a v{latest}...")
         subprocess.run(["git", "fetch", "--all"], cwd=REPO_PATH, check=True)
         subprocess.run(["git", "reset", "--hard", "origin/main"], cwd=REPO_PATH, check=True)
-        print_log("✅ Sistema actualizado con éxito.")
+        print_log("[INFO] Sistema actualizado con éxito.")
         
         # Reiniciar la aplicación
-        print_log("🔄 Reiniciando la aplicación...")
+        print_log("[INFO] 🔄 Reiniciando la aplicación...")
         os.execv(sys.executable, "python", sys.argv)
     except subprocess.CalledProcessError as e:
         print_log(f"[ERROR] al actualizar: {e}")

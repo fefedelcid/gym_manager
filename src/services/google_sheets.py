@@ -42,7 +42,7 @@ def read_sheet(spreadsheet_id, range_name, sheet):
     values = result.get("values", [])
 
     if not values:
-        print_log("No se encontraron datos en la hoja.")
+        print_log("[WARNING] No se encontraron datos en la hoja.")
         return None
     else:
         return values

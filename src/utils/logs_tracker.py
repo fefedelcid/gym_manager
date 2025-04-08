@@ -72,7 +72,6 @@ def can_send_today_log():
         data = json.load(f)
     last_ts = datetime.fromisoformat(data["timestamp"])
     cd = _ensure_timezone(datetime.now()) - last_ts
-    print_log(f"[INFO] Cooldown para el próximo envío de log: {timedelta(hours=1) - cd}")
     return cd >= timedelta(hours=1)
 
 def update_last_send_timestamp():
@@ -81,7 +80,7 @@ def update_last_send_timestamp():
 
 def send_today_log():
     if not can_send_today_log():
-        print_log("⏳ Esperá una hora antes de volver a enviar el log de hoy.")
+        print_log("[WARNING] ⏳ Debe esperar una hora antes de volver a enviar el log de hoy.")
         return False
 
     log_name = f"{SESSION_TIMESTAMP.strftime('%Y.%m.%d')}.log"

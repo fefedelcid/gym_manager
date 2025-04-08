@@ -76,7 +76,7 @@ def parse_date(date_input) -> datetime:
     if isinstance(date_input, str):  # Cadena de texto
         return _parse_string(date_input)
 
-    raise ValueError(f"❌ Formato de fecha no reconocido: {date_input}, type={type(date_input)}")
+    raise ValueError(f"[ERROR] Formato de fecha no reconocido: {date_input}, type={type(date_input)}")
 
 def _parse_timestamp(timestamp: float) -> datetime:
     """Convierte un timestamp (segundos o milisegundos) en un objeto datetime UTC sin tzinfo."""
@@ -100,7 +100,7 @@ def _parse_string(date_str: str) -> datetime:
         except ValueError:
             continue
 
-    raise ValueError(f"❌ Formato de fecha inválido: {date_str}, type={type(date_str)}")
+    raise ValueError(f"[ERROR] Formato de fecha inválido: {date_str}, type={type(date_str)}")
 
 
 
