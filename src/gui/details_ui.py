@@ -10,18 +10,23 @@ class DetailsFrame(CTkFrame):
         self.clientId = None
         self.update_callback = None
         self.fields = {}
+
         self.title = CTkLabel(self, text="Seleccionar cliente", font=("", 32))
         self.title.pack(pady=10)
 
         # Formulario izquierdo
         self.controller = MainFrame(self)
         self.controller.pack(side="left", fill="both", expand=True)
+
         self.client_form = self.controller.add_frame("ClientForm", ClienteForm)
         self.client_form.callback = self.guardar_datos
+        
         self.ficha_form = self.controller.add_frame("FichaForm", FichaForm)
         self.ficha_form.callback = self.guardar_ficha
+        
         self.pagos_form = self.controller.add_frame("PagosForm", PagosForm)
         self.pagos_form.callback = self.registrar_pago
+        
         self.controller.show_frame("ClientForm")
 
         # Botonera derecha
@@ -37,8 +42,10 @@ class DetailsFrame(CTkFrame):
         # Cambio de formularios
         self.btn_client = StatefulBtn(self.form_btns_frame, text="Datos Personales", command=lambda: self.selected_form("ClientForm"))
         self.btn_client.pack(pady=10)
+        
         self.btn_ficha = StatefulBtn(self.form_btns_frame, text="Ficha Médica", command=lambda: self.selected_form("FichaForm"))
         self.btn_ficha.pack(pady=10)
+        
         self.btn_pagos = StatefulBtn(self.form_btns_frame, text="Historial de Pagos", command=lambda: self.selected_form("PagosForm"))
         self.btn_pagos.pack(pady=10)
 

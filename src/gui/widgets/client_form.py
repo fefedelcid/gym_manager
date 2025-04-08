@@ -152,6 +152,7 @@ class PagosForm(CTkFrame, BaseForm):
 
     def register_payment(self):
         createdAt, amount = self.createdAt.get(), self.amount.get()
+        print_log(f"[INFO] PagosForm.register_payment, createdAt:{createdAt}, amount:{amount}")
         if createdAt and amount:
             self.callback(createdAt=createdAt, amount=amount)
             self.alert.configure(text="")
