@@ -1,6 +1,6 @@
 from datetime import datetime, timezone, timedelta, date
 from src.config import LOGS_DIR
-import os
+import os, inspect
 
 def get_center(widget, width: float = 0, height: float = 0, w_hint: float = None, h_hint: float = None) -> str:
     '''
@@ -45,13 +45,34 @@ SESSION_TIMESTAMP = datetime.fromtimestamp(get_timestamp())
 string = datetime.strftime(SESSION_TIMESTAMP, "%Y.%m.%d")
 LOG_FILE = os.path.join(LOGS_DIR, f"{string}.log")
 
-def print_log(message:str):
-    """Escribe un mensaje en el archivo de logs con timestamp."""
+def print_log(message: str):
+    """Escribe un mensaje en el archivo de logs con timestamp y contexto de llamada."""
+    frame = inspect.currentframe()
+    outer_frames = inspect.getouterframes(frame)
+
+    # El índice 1 es quien llamó a `print_log`
+    caller_frame = outer_frames[1]
+    filename = caller_frame.filename
+    lineno = caller_frame.lineno
+    function = caller_frame.function
+
+    # Intentar detectar la clase si estamos dentro de un método
+    cls_name = None
+    caller_locals = caller_frame.frame.f_locals
+    if 'self' in caller_locals:
+        cls_name = caller_locals['self'].__class__.__name__
+
+    location = f"{filename}:{lineno} - "
+    if cls_name:
+        location += f"{cls_name}."
+    location += f"{function}()"
+
     timestamp = datetime.now(tz=UTC_MINUS_3).strftime("%Y-%m-%d %H:%M:%S")
-    message = f"[{timestamp}] {message}\n"
-    print(message)
+    full_message = f"[{timestamp}] {location} - {message}\n"
+
+    print(full_message)
     with open(LOG_FILE, "a", encoding="utf-8") as log_file:
-        log_file.write(message)
+        log_file.write(full_message)
 
 def init_logfile():
     if os.path.isfile(LOG_FILE):
