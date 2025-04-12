@@ -3,6 +3,7 @@ from customtkinter import CTk, set_appearance_mode, set_default_color_theme
 from src.gui import HomeFrame, ClientsFrame, PaymentsFrame, ConfigFrame, DetailsFrame
 from src.gui.widgets import MainFrame, SideBar
 from src.utils import get_center, print_log, LOG_FILE
+from src.utils.logs_tracker import send_today_log
 
 set_appearance_mode(APPEARANCE_MODE)
 set_default_color_theme(COLOR_THEME)
@@ -49,4 +50,5 @@ class MainWindow(CTk):
         print_log("[INFO] Cerrando aplicación.")
         with open(LOG_FILE, "a", encoding="utf-8") as log_file:
             log_file.write(f'|{">"*25} >>> >> >\n')
+        send_today_log()
         super().destroy()
