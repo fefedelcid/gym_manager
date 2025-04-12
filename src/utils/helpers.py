@@ -62,27 +62,28 @@ def print_log(message: str):
     if 'self' in caller_locals:
         cls_name = caller_locals['self'].__class__.__name__
 
-    location = f"{filename}:{lineno} - "
+    location = f"{filename}:"
     if cls_name:
         location += f"{cls_name}."
-    location += f"{function}()"
+    location += f"{function}():{lineno}"
 
     timestamp = datetime.now(tz=UTC_MINUS_3).strftime("%Y-%m-%d %H:%M:%S")
-    full_message = f"[{timestamp}]@[{location}] {message}\n"
+    full_message = f"|   [{timestamp}] [{location}] {message}\n"
+    full_message = full_message.replace("|   ","|>>>") if "error" in full_message.lower() else full_message
 
     print(full_message)
     with open(LOG_FILE, "a", encoding="utf-8") as log_file:
         log_file.write(full_message)
 
 def init_logfile():
+    timestamp = datetime.now(tz=UTC_MINUS_3).strftime("%Y-%m-%d %H:%M:%S")
     if os.path.isfile(LOG_FILE):
-        return print_log("[INFO] Nueva sesión iniciada.")
-    
-    with open(LOG_FILE, "w") as file:
-        timestamp = datetime.now(tz=UTC_MINUS_3).strftime("%Y-%m-%d %H:%M:%S")
-        file.write(f'{"#"*110}\n{"#"*110}\n')
-        file.write(f"[{timestamp}][INFO] Sistema inicializado.\n")
-init_logfile()
+        with open(LOG_FILE, "a", encoding="utf-8") as file:
+            file.write(f'|{">"*25} >>> >> >\n')
+            file.write(f"|>>>[{timestamp}] [INFO] Nueva sesión iniciada.\n")
+    else:
+        with open(LOG_FILE, "w") as file:
+            file.write(f"|   [{timestamp}] [INFO] Sistema inicializado.\n")
 
 def parse_date(date_input) -> datetime:
     """Convierte una fecha en distintos formatos a un objeto datetime sin zona horaria."""
