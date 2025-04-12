@@ -52,7 +52,7 @@ def print_log(message: str):
 
     # El índice 1 es quien llamó a `print_log`
     caller_frame = outer_frames[1]
-    filename = caller_frame.filename
+    filename = caller_frame.filename.split("gym_manager")[1]
     lineno = caller_frame.lineno
     function = caller_frame.function
 
@@ -68,7 +68,7 @@ def print_log(message: str):
     location += f"{function}()"
 
     timestamp = datetime.now(tz=UTC_MINUS_3).strftime("%Y-%m-%d %H:%M:%S")
-    full_message = f"[{timestamp}] {location} - {message}\n"
+    full_message = f"[{timestamp}]@[{location}] {message}\n"
 
     print(full_message)
     with open(LOG_FILE, "a", encoding="utf-8") as log_file:
@@ -76,12 +76,11 @@ def print_log(message: str):
 
 def init_logfile():
     if os.path.isfile(LOG_FILE):
-        with open(LOG_FILE, "a", encoding="utf-8") as file:
-            file.write(f'{"#"*110}\n{"#"*110}\n')
         return print_log("[INFO] Nueva sesión iniciada.")
     
     with open(LOG_FILE, "w") as file:
         timestamp = datetime.now(tz=UTC_MINUS_3).strftime("%Y-%m-%d %H:%M:%S")
+        file.write(f'{"#"*110}\n{"#"*110}\n')
         file.write(f"[{timestamp}][INFO] Sistema inicializado.\n")
 init_logfile()
 

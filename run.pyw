@@ -18,4 +18,4 @@ def ensure_venv():
 if __name__=="__main__":
     ensure_venv()
     print_log("Iniciando sistema...")
-    subprocess.run([VENV_PATH, "main.py"])
+    subprocess.run([VENV_PATH.replace("python", "pythonw"), "main.pyw"])

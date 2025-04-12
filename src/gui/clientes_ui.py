@@ -19,4 +19,4 @@ class ClientsFrame(CTkFrame):
         ClientsTable.item_selected.
         :data: Mismo que Cliente.document"""
         print_log(f"[INFO] ClientsFrame.callback, data:{data}")
-        self.master.show_frame("DetailsFrame", data)
+        self.master.show_frame("DetailsFrame", data) 
