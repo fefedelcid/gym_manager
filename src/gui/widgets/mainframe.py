@@ -23,7 +23,7 @@ class MainFrame(CTkFrame):
         for frame in self.frames.values():
             frame.pack_forget()
         try:
-            print_log(f"MainFrame.show_frame, frame:{name}, data:{data}")
+            print_log(f"frame:{name}, data:{data}")
             if name=="DetailsFrame" and data:
                 self.frames[name].populate(data)
             self.frames[name].pack(fill="both", expand=True)
