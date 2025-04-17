@@ -48,7 +48,7 @@ class MainWindow(CTk):
 
     def destroy(self):
         print_log("[INFO] Cerrando aplicación.")
-        send_today_log()
+        send_today_log(bypass=True)
         with open(LOG_FILE, "a", encoding="utf-8") as log_file:
             log_file.write(f'|{">"*25} >>> >> >\n')
         super().destroy()

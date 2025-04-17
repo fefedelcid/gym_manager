@@ -78,10 +78,11 @@ def update_last_send_timestamp():
     with open(LAST_SEND_FILE, "w") as f:
         json.dump({"timestamp": _ensure_timezone(datetime.now()).isoformat()}, f)
 
-def send_today_log():
-    if not can_send_today_log():
-        print_log("[WARNING] ⏳ Debe esperar una hora antes de volver a enviar el log de hoy.")
-        return False
+def send_today_log(bypass:bool = False):
+    if not bypass:
+        if not can_send_today_log():
+            print_log("[WARNING] ⏳ Debe esperar una hora antes de volver a enviar el log de hoy.")
+            return False
 
     log_name = f"{SESSION_TIMESTAMP.strftime('%Y.%m.%d')}.log"
     log_path = os.path.join(LOGS_DIR, log_name)
