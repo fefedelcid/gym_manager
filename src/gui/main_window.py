@@ -19,7 +19,7 @@ class MainWindow(CTk):
         self.title(TITLE)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
-        self.resizable(False, False)
+        self.resizable(True, True)
 
         # Vistas
         self.mainframe = MainFrame(self)

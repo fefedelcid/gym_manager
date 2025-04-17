@@ -5,6 +5,7 @@
 **/build/**
 **/dist/**
 .venv/**
+.ssh/**
 *.zip
 *.db
 *.spec
