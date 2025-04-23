@@ -2,6 +2,7 @@ from src.services import read_sheet, find_spreadsheet, get_google_sheets_service
 from src.database import Database, Cliente, Ficha
 from src.utils import parse_date, print_log
 from src.config import SPREADSHEET_NAME, REGISTRADOS, NUEVOS
+from sqlite3 import IntegrityError
 
 def delete_records(records, sheet, spreadsheetId, _from=NUEVOS):
     try:
@@ -155,8 +156,10 @@ def sync_clients():
             try:
                 db.add_client(document, ficha)
                 print_log(f"[INFO] Cliente agregado con éxito: ({document})")
+            except IntegrityError as e:
+                print_log(f"[WARNING] (sqlite3.IntegrityError) UNIQUE constraint failed: {e.args}")
             except Exception as e:
-                error_msg = f"[ERROR] al insertar en DB, fila {idx}: {type(e)}"
+                error_msg = f"[ERROR] al insertar en DB, fila {idx}: {e.args}"
                 print_log(f"{error_msg}")
 
         clientes_procesados.append(cliente)
