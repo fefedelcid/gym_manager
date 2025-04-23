@@ -29,6 +29,11 @@ class MainWindow(CTk):
         self.mainframe.add_frame("HomeFrame", HomeFrame)
         # Página de estudiantes
         self.clients_frame = self.mainframe.add_frame("StudentsFrame", ClientsFrame)
+
+        new_student = self.mainframe.add_frame("NewStudentFrame", DetailsFrame)
+        new_student.nuevo_cliente()
+        new_student.update_callback = self.update_tables
+        
         details = self.mainframe.add_frame("DetailsFrame", DetailsFrame)
         details.update_callback = self.update_tables
         # Página de pagos

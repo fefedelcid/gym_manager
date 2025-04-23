@@ -1,8 +1,7 @@
 from customtkinter import CTkFrame, CTkLabel
 from src.gui.widgets import MainFrame, StatefulBtn, ClienteForm, PagosForm, FichaForm, DangerBtn
-from src.database import Database, Cliente
+from src.database import Database
 from datetime import datetime
-from src.utils import print_log, parse_date
 
 class DetailsFrame(CTkFrame):
     def __init__(self, master, name, *args, **kwargs):
@@ -11,7 +10,6 @@ class DetailsFrame(CTkFrame):
         self.clientId = None
         self.update_callback = None
         self.fields = {}
-        self.modo_creacion = False  # Nuevo estado
         self.title = CTkLabel(self, text="Seleccionar cliente", font=("", 32))
         self.title.pack(pady=10)
 
@@ -45,29 +43,38 @@ class DetailsFrame(CTkFrame):
         self.btn_pagos.pack(pady=10)
 
         # Acciones sobre los datos
+        # --- Eliminar alumno ---
         DangerBtn(self.extra_btns_frame, text="Eliminar alumno", command=self.eliminar_alumno).pack(pady=10)
 
+        # --- Limpiar cambios ---
         self.selected_form("ClientForm")
-
+        
     def selected_form(self, form_name):
         self.controller.show_frame(form_name)
-        self.btn_client.state = form_name == "ClientForm"
-        self.btn_ficha.state = form_name == "FichaForm"
-        self.btn_pagos.state = form_name == "PagosForm"
-        self.btn_client.update_color()
-        self.btn_ficha.update_color()
-        self.btn_pagos.update_color()
-
-    def nuevo_cliente(self):
-        self.clientId = None
-        self.modo_creacion = True
-        self.title.configure(text="Nuevo Cliente")
-        self.client_form.generate_form(Cliente())
-        self.ficha_form.generate_form(None)
-        self.pagos_form.update_table([])
-        self.selected_form("ClientForm")
+        if form_name=="ClientForm":
+            self.btn_client.state=True
+            self.btn_client.update_color()
+            self.btn_ficha.state=False
+            self.btn_ficha.update_color()
+            self.btn_pagos.state=False
+            self.btn_pagos.update_color()
+        elif form_name=="FichaForm":
+            self.btn_client.state=False
+            self.btn_client.update_color()
+            self.btn_ficha.state=True
+            self.btn_ficha.update_color()
+            self.btn_pagos.state=False
+            self.btn_pagos.update_color()
+        elif form_name=="PagosForm":
+            self.btn_client.state=False
+            self.btn_client.update_color()
+            self.btn_ficha.state=False
+            self.btn_ficha.update_color()
+            self.btn_pagos.state=True
+            self.btn_pagos.update_color()
 
     def populate(self, document):
+        """Este método completa los 3 formularios según el cliente seleccionado."""
         db = Database()
         client = db.get_client(document)
         self.clientId = client.id
@@ -75,10 +82,11 @@ class DetailsFrame(CTkFrame):
         pagos = db.get_payments(client.id)
 
         self.title.configure(text=client.fullName)
+
         self.client_form.generate_form(client)
         self.ficha_form.generate_form(ficha)
         self.pagos_form.update_table(pagos)
-        self.modo_creacion = False
+        
         self.selected_form("ClientForm")
 
     def eliminar_alumno(self):
@@ -87,8 +95,8 @@ class DetailsFrame(CTkFrame):
         self.master.show_frame("StudentsFrame")
         if self.update_callback:
             self.update_callback()
-
-    def registrar_pago(self, amount: float, createdAt: datetime = None):
+    
+    def registrar_pago(self, amount:float, createdAt:datetime=None):
         db = Database()
         db.add_payment(clientId=self.clientId, amount=amount, date=createdAt)
         pagos = db.get_payments(self.clientId)
@@ -98,29 +106,12 @@ class DetailsFrame(CTkFrame):
 
     def guardar_ficha(self, **ficha):
         db = Database()
-        print_log(f"[DEBUG] Datos recibidos para guardar_ficha: {ficha}")
         db.update_ficha(self.clientId, **ficha)
         if self.update_callback:
             self.update_callback()
 
     def guardar_datos(self, **data):
         db = Database()
-        print_log(f"[DEBUG] Datos recibidos para guardar_datos: {data}")
-        try:
-            for field in ["createdAt", "birthDate", "lastPayment"]:
-                if field in data:
-                    data[field] = parse_date(data[field]) if data[field] else None  # 👈 esto es clave
-
-            if self.clientId is None:
-                cliente = Cliente(**data)
-                cliente = db.add_client(cliente)
-                if cliente:
-                    self.clientId = cliente.id
-                    self.title.configure(text=cliente.fullName)
-                    self.modo_creacion = False
-            else:
-                db.update_client(self.clientId, **data)
-            if self.update_callback:
-                self.update_callback()
-        except Exception as e:
-            print_log(f"[Exception] {e.args}")
+        db.update_client(self.clientId, **data)
+        if self.update_callback:
+            self.update_callback()

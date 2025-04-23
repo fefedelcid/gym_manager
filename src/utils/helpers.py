@@ -129,11 +129,19 @@ def _parse_timestamp(timestamp: float) -> datetime:
 
 def _parse_string(date_str: str) -> datetime:
     """Convierte una cadena de texto en un objeto datetime UTC sin tzinfo."""
-    date_str = date_str.strip()
+    date_str = date_str.strip().split("+")[0]
     if date_str.isdecimal():
         return parse_date(int(date_str))
 
-    date_formats = ["%d/%m/%Y", "%d/%m/%Y %H:%M:%S", "%m/%d/%Y %H:%M:%S", "%m/%d/%Y", "%Y-%m-%d", "%Y-%m-%d %H:%M:%S"]
+    date_formats = [
+        "%d/%m/%Y",
+        "%d/%m/%Y %H:%M:%S",
+        "%m/%d/%Y %H:%M:%S",
+        "%m/%d/%Y",
+        "%Y-%m-%d",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%d %H:%M:%S.%f"
+        ]
     
     for fmt in date_formats:
         try:

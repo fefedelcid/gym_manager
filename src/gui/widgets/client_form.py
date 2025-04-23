@@ -46,6 +46,7 @@ class BaseForm:
         for key, entry in self.fields.items():
             if key in ["Último pago", "Inscripto desde", "Email"]: continue
             entry.configure(state=state, border_color='#ff3636' if state=="normal" else '#565B5E')
+
     def refresh(self):
         for widget in self.winfo_children():
             widget.destroy()
@@ -69,18 +70,20 @@ class ClienteForm(CTkScrollableFrame, BaseForm):
         self.add_field("Teléfono", client.phone)
         self.add_field("Dirección", client.address)
         self.add_field("Último pago", client.lastPayment)
+        self.add_field("Objetivo", client.goal)
 
     def guardar_cambios(self):
         datos = {
-            "createdAt":self.fields["Inscripto desde"].get(),
+            "createdAt":parse_date(self.fields["Inscripto desde"].get()),
             "fullName":self.fields["Nombre Completo"].get(),
-            "birthDate":self.fields["Fecha de Nacimiento"].get(),
+            "birthDate":parse_date(self.fields["Fecha de Nacimiento"].get()),
             "document":self.fields["Documento"].get(),
             "gender":self.fields["Género"].get(),
             "email":self.fields["Email"].get(),
             "phone":self.fields["Teléfono"].get(),
             "address":self.fields["Dirección"].get(),
-            "lastPayment":self.fields["Último pago"].get()
+            "lastPayment":self.fields["Último pago"].get(),
+            "goal":self.fields["Objetivo"].get()
         }
         self.callback(**datos)
 
@@ -90,14 +93,14 @@ class FichaForm(CTkScrollableFrame, BaseForm):
         CTkScrollableFrame.__init__(self, master, *args, **kwargs)
         BaseForm.__init__(self, master, name, *args, **kwargs)
 
-    def generate_form(self, ficha:Ficha):
+    def generate_form(self, ficha:Ficha|None):
         self.refresh()
         self.add_switch(self.guardar_cambios)
-        self.add_field("Historial Médico", ficha.medicalHistory)
-        self.add_field("Medicación", ficha.medication)
-        self.add_field("Lesión Reciente", ficha.recentInjury)
-        self.add_field("Contacto de Emergencia", ficha.emergencyContact)
-        self.add_field("Certificado Médico", ficha.medicalCertificate)
+        self.add_field("Historial Médico", ficha.medicalHistory if ficha else "")
+        self.add_field("Medicación", ficha.medication if ficha else "")
+        self.add_field("Lesión Reciente", ficha.recentInjury if ficha else "")
+        self.add_field("Contacto de Emergencia", ficha.emergencyContact if ficha else "")
+        self.add_field("Certificado Médico", ficha.medicalCertificate if ficha else "")
 
     def guardar_cambios(self):
         ficha = {
@@ -173,7 +176,7 @@ class PagosForm(CTkFrame, BaseForm):
                 self.table.move(kid, "", index)
             self.table.heading(col, command=lambda: self.sort_column(col, not reverse))
         except Exception as e:
-            print_log(f"[Exception] on: PagosForm.sort_column, {e}")
+            print_log(f"[Exception] {e}")
 
     def item_selected(self, event=None):
         try:
@@ -184,7 +187,7 @@ class PagosForm(CTkFrame, BaseForm):
             self.createdAt.insert(0, string=values[0])
             self.amount.insert(0, values[1])
         except Exception as e:
-            print_log(f"[Exception] on: PagosForm.item_selected, {e}")
+            print_log(f"[Exception] {e}")
 
     def update_table(self, movimientos:list[Movimiento]):
         try:
@@ -193,4 +196,4 @@ class PagosForm(CTkFrame, BaseForm):
                 values = (pago.createdAt.strftime("%d/%m/%Y"), pago.amount)
                 self.table.insert("", "end", values=values)
         except Exception as e:
-            print_log(f"[Exception] on: PagosForm.update_table, {e}")
+            print_log(f"[Exception] {e}")
