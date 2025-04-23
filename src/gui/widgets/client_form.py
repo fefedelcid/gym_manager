@@ -37,6 +37,7 @@ class BaseForm:
 
     def edit_mode(self, cb=None):
         self.enabled = not self.enabled
+        print_log(f"[DEBUG] enabled:{self.enabled}")
 
         state = "normal" if self.enabled else "disabled"
         if self.btn:
@@ -73,19 +74,24 @@ class ClienteForm(CTkScrollableFrame, BaseForm):
         self.add_field("Objetivo", client.goal)
 
     def guardar_cambios(self):
-        datos = {
-            "createdAt":parse_date(self.fields["Inscripto desde"].get()),
-            "fullName":self.fields["Nombre Completo"].get(),
-            "birthDate":parse_date(self.fields["Fecha de Nacimiento"].get()),
-            "document":self.fields["Documento"].get(),
-            "gender":self.fields["Género"].get(),
-            "email":self.fields["Email"].get(),
-            "phone":self.fields["Teléfono"].get(),
-            "address":self.fields["Dirección"].get(),
-            "lastPayment":self.fields["Último pago"].get(),
-            "goal":self.fields["Objetivo"].get()
-        }
-        self.callback(**datos)
+        try:
+            datos = {
+                "createdAt":parse_date(self.fields["Inscripto desde"].get()),
+                "fullName":self.fields["Nombre Completo"].get(),
+                "birthDate":parse_date(self.fields["Fecha de Nacimiento"].get()),
+                "document":self.fields["Documento"].get(),
+                "gender":self.fields["Género"].get(),
+                "email":self.fields["Email"].get(),
+                "phone":self.fields["Teléfono"].get(),
+                "address":self.fields["Dirección"].get(),
+                "lastPayment":self.fields["Último pago"].get(),
+                "goal":self.fields["Objetivo"].get()
+            }
+            self.callback(**datos)
+        except Exception as e:
+            print_log(f"[Exception] {e.args}")
+            if self.enabled:
+                self.edit_mode()
 
 
 class FichaForm(CTkScrollableFrame, BaseForm):
@@ -103,14 +109,19 @@ class FichaForm(CTkScrollableFrame, BaseForm):
         self.add_field("Certificado Médico", ficha.medicalCertificate if ficha else "")
 
     def guardar_cambios(self):
-        ficha = {
-            "medicalHistory": self.fields["Historial Médico"].get(),
-            "medication": self.fields["Medicación"].get(),
-            "recentInjury": self.fields["Lesión Reciente"].get(),
-            "emergencyContact": self.fields["Contacto de Emergencia"].get(),
-            "medicalCertificate": self.fields["Certificado Médico"].get()
-        }
-        self.callback(**ficha)
+        try:
+            ficha = {
+                "medicalHistory": self.fields["Historial Médico"].get(),
+                "medication": self.fields["Medicación"].get(),
+                "recentInjury": self.fields["Lesión Reciente"].get(),
+                "emergencyContact": self.fields["Contacto de Emergencia"].get(),
+                "medicalCertificate": self.fields["Certificado Médico"].get()
+            }
+            self.callback(**ficha)
+        except Exception as e:
+            print_log(f"[Exception] {e.args}")
+            if self.enabled:
+                self.edit_mode()
 
 
 
@@ -154,15 +165,18 @@ class PagosForm(CTkFrame, BaseForm):
         self.table.heading("amount", text="Cantidad Abonada", anchor="center")
 
     def register_payment(self):
-        createdAt, amount = self.createdAt.get(), self.amount.get()
-        if createdAt and amount:
-            self.callback(createdAt=createdAt, amount=amount)
-            self.alert.configure(text="")
-            self.amount.clear()
-        elif not createdAt:
-            self.alert.configure(text="La fecha ingresada es incorrecta.")
-        elif not amount:
-            self.alert.configure(text="El monto ingresado es inválido.")
+        try:
+            createdAt, amount = self.createdAt.get(), self.amount.get()
+            if createdAt and amount:
+                self.callback(createdAt=createdAt, amount=amount)
+                self.alert.configure(text="")
+                self.amount.clear()
+            elif not createdAt:
+                self.alert.configure(text="La fecha ingresada es incorrecta.")
+            elif not amount:
+                self.alert.configure(text="El monto ingresado es inválido.")
+        except Exception as e:
+            print_log(f"[Exception] {e.args}")
 
     def sort_column(self, col, reverse):
         try:

@@ -12,7 +12,7 @@ class SideBar(CTkFrame):
         self.icons = [
             IconButton(self, f'assets/icons/icons8-casa-{size}.png', 'HomeFrame', self.controller), # Inicio
             IconButton(self, f'assets/icons/icons8-contactos-{size}.png', 'StudentsFrame', self.controller), # Alumnos
-            IconButton(self, f'assets/icons/icons8-info-{size}.png', 'NewStudentFrame', self.controller), # Nuevo alumno
+            IconButton(self, f'assets/icons/icons8-add-user-{size}.png', 'NewStudentFrame', self.controller), # Nuevo alumno
             IconButton(self, f'assets/icons/icons8-info-{size}.png', 'DetailsFrame', self.controller), # Detalles
             IconButton(self, f'assets/icons/icons8-currency-{size}.png', 'PaymentsFrame', self.controller), # Caja
             IconButton(self, f'assets/icons/icons8-whatsapp-{size}.png', 'whatsapp', self.controller), # Whatsapp

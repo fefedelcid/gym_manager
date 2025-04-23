@@ -49,6 +49,13 @@ class DetailsFrame(CTkFrame):
 
         self.selected_form("ClientForm")
 
+    def esta_editando(self) -> bool:
+        '''Retorna True si el modo edicion se encuentra activo'''
+        return (
+            getattr(self.client_form, "enabled", False) or
+            getattr(self.ficha_form, "enabled", False)
+        )
+
     def selected_form(self, form_name):
         self.controller.show_frame(form_name)
         self.btn_client.state = form_name == "ClientForm"
@@ -63,7 +70,11 @@ class DetailsFrame(CTkFrame):
         self.modo_creacion = True
         self.title.configure(text="Nuevo Cliente")
         self.client_form.generate_form(Cliente())
+        if self.client_form.enabled:
+            self.client_form.edit_mode()
         self.ficha_form.generate_form(None)
+        if self.ficha_form.enabled:
+            self.ficha_form.edit_mode()
         self.pagos_form.update_table([])
         self.selected_form("ClientForm")
 
