@@ -21,6 +21,8 @@ TOKEN_PATH = os.path.join(os.path.dirname(CREDENTIALS_PATH), "token.pickle")
 # Ruta de version.json (remoto)
 UPDATE_URL = "https://raw.githubusercontent.com/fefedelcid/gym_manager/refs/heads/main/version.json"
 
+# Ruta de app.lock
+LOCK_FILE = os.path.join(REPO_PATH, 'app.lock')
 
 # Verificación de existencia de credenciales
 if not os.path.exists(CREDENTIALS_PATH):

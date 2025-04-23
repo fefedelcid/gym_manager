@@ -4,6 +4,7 @@ import subprocess
 from packaging import version
 from src.config import VERSION_FILE, UPDATE_URL, REPO_PATH
 from src.utils import print_log
+from src.utils.helpers import remove_lock
 
 
 def get_current_version():
@@ -54,6 +55,8 @@ def update_app(current, latest):
         print_log("[INFO] Sistema actualizado con éxito.")
         
         # Reiniciar la aplicación
+        print_log("[INFO] Eliminando lockfile...")
+        remove_lock()
         print_log("[INFO] 🔄 Reiniciando la aplicación...")
         os.execv(sys.executable, "python", sys.argv)
     except subprocess.CalledProcessError as e:

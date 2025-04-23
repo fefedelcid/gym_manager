@@ -1,6 +1,23 @@
 from datetime import datetime, timezone, timedelta, date
-from src.config import LOGS_DIR
-import os, inspect
+from src.config import LOGS_DIR, LOCK_FILE
+import os, inspect, sys
+
+
+def remove_lock(*_):
+    if os.path.exists(LOCK_FILE):
+        os.remove(LOCK_FILE)
+
+def check_already_running():
+    if os.path.exists(LOCK_FILE):
+        print_log("Otra instancia ya está corriendo.")
+        sys.exit(0)
+
+    # Al cerrar la app, eliminamos el lock
+    import atexit
+    atexit.register(remove_lock)
+
+    with open(LOCK_FILE, 'w') as f:
+        f.write(str(os.getpid()))
 
 def get_center(widget, width: float = 0, height: float = 0, w_hint: float = None, h_hint: float = None) -> str:
     '''
