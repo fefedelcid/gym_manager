@@ -118,6 +118,10 @@ def parse_date(date_input) -> datetime:
     if isinstance(date_input, str):  # Cadena de texto
         return _parse_string(date_input)
 
+    if date_input == None:
+        print_log(f"[WARNING] date_input type=<class 'NoneType'>")
+        return ''
+
     raise ValueError(f"[ERROR] Formato de fecha no reconocido: {date_input}, type={type(date_input)}")
 
 def _parse_timestamp(timestamp: float) -> datetime:
