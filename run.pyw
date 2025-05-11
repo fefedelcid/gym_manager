@@ -3,7 +3,7 @@ from src.config import VENV_PATH
 from src.utils import print_log, init_logfile, check_already_running
 
 
-check_already_running()
+# check_already_running()
 
 def ensure_venv():
     """Crea un entorno virtual e instala dependencias si es necesario."""
