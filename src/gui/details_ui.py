@@ -121,7 +121,10 @@ class DetailsFrame(CTkFrame):
             for field in ["createdAt", "birthDate", "lastPayment"]:
                 if field in data:
                     data[field] = parse_date(data[field]) if data[field] else None  # 👈 esto es clave
-
+            if field == "lastPayment":
+                data["lastPayment"] = data["lastPayment"] or datetime.now()
+                print_log(f"[DEBUG] lastPayment ajustado a: {data['lastPayment']}")
+                
             if self.clientId is None:
                 cliente = Cliente(**data)
                 cliente = db.add_client(cliente)
